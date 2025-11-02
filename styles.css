@@ -1,0 +1,1875 @@
+@font-face {
+    font-family: "ZutekSans";
+    src: url("https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/fonts/ZutekSans/ZutekSans-Normal.woff") format("woff");
+    font-display: swap;
+    font-weight: 300;
+}
+
+@font-face {
+    font-family: "ZutekSans";
+    src: url("https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/fonts/ZutekSans/ZutekSans-Medium.woff") format("woff");
+    font-display: swap;
+    font-weight: 500;
+}
+
+@font-face {
+    font-family: "ZutekSans";
+    src: url("https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/fonts/ZutekSans/ZutekSans-Bold.woff") format("woff");
+    font-display: swap;
+    font-weight: 700;
+}
+
+/* 基础变量 - Material Design 3 核心规范 */
+:root {
+    /* 色彩系统 - 动态主题色 */
+    --md-sys-color-primary: #795548;
+    --md-sys-color-primary-container: #EFE0D9;
+    --md-sys-color-on-primary: #FFFFFF;
+    --md-sys-color-on-primary-container: #2C170F;
+
+    --md-sys-color-secondary: #6B5A52;
+    --md-sys-color-secondary-container: #F1E3DB;
+    --md-sys-color-on-secondary: #FFFFFF;
+    --md-sys-color-on-secondary-container: #251912;
+
+    --md-sys-color-tertiary: #5C6A48;
+    --md-sys-color-tertiary-container: #E1EEC4;
+    --md-sys-color-on-tertiary: #FFFFFF;
+    --md-sys-color-on-tertiary-container: #1A2605;
+
+    --md-sys-color-error: #B3261E;
+    --md-sys-color-error-container: #FEEBE9;
+    --md-sys-color-on-error: #FFFFFF;
+    --md-sys-color-on-error-container: #410E0B;
+
+    --md-sys-color-background: #FFFBF8;
+    --md-sys-color-on-background: #1D1B19;
+    --md-sys-color-surface: #FFFBF8;
+    --md-sys-color-surface-variant: #F1E7E1;
+    --md-sys-color-on-surface: #1D1B19;
+    --md-sys-color-on-surface-variant: #51453D;
+
+    --md-sys-color-outline: #83746B;
+    --md-sys-color-outline-variant: #D4C4B8;
+
+    --md-sys-color-shadow: #000000;
+    --md-sys-color-scrim: #000000;
+
+    /* 排版系统 - Material Design 3 字体规范 */
+    --md-ref-typeface-brand: 'Noto Sans', 'ZutekSans', 'PingFang TC', sans-serif;
+    --md-ref-typeface-plain: 'Noto Sans', 'ZutekSans', 'PingFang TC', sans-serif;
+
+    /* 组件尺寸 */
+    --md-sys-shape-corner-small: 4px;
+    --md-sys-shape-corner-medium: 8px;
+    --md-sys-shape-corner-large: 16px;
+    --md-sys-shape-corner-full: 9999px;
+
+    /*  elevation 阴影系统 */
+    --md-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+    --md-elevation-2: 0 2px 4px rgba(0, 0, 0, 0.1), 0 2px 3px rgba(0, 0, 0, 0.1);
+    --md-elevation-3: 0 4px 5px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
+    --md-elevation-4: 0 5px 10px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
+
+    /* 动画曲线 */
+    --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
+    --md-sys-motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --md-sys-motion-duration-short: 200ms;
+    --md-sys-motion-duration-medium: 300ms;
+    --md-sys-motion-duration-long: 500ms;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+button {
+    outline: none;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    border: none;
+    cursor: pointer;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--md-ref-typeface-plain);
+    font-weight: 300;
+    background-color: var(--md-sys-color-background);
+    color: var(--md-sys-color-on-background);
+    line-height: 1.5;
+    overflow: hidden;
+    max-height: 100dvh;
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.material-symbols-rounded {
+    font-variation-settings:
+        'FILL' 1,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24;
+    font-size: 1.4em;
+}
+
+button:has(.material-symbols-rounded) {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.25em;
+    align-items: center;
+}
+
+.app-bar {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    padding: 1rem 1.25rem 0;
+    box-shadow: var(--md-elevation-2);
+}
+
+.app-bar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.app-bar-header h1 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.app-bar-actions {
+    display: flex;
+}
+
+.app-bar-actions .material-symbols-rounded {
+    font-size: 1.5rem;
+    opacity: 0.9;
+    cursor: pointer;
+    transition:
+        opacity var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.app-bar-actions .material-symbols-rounded:hover {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.app-tabs {
+    display: flex;
+    gap: 0.5rem;
+    position: relative;
+    height: 48px;
+}
+
+.tab-item {
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0 1rem;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.7);
+    position: relative;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+    letter-spacing: 0.5px;
+}
+
+.tab-item.active {
+    color: var(--md-sys-color-on-primary);
+    font-weight: 500;
+}
+
+.tab-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    transition:
+        transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized),
+        background-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized);
+    transform-origin: center;
+}
+
+.tab-item.active::after {
+    background-color: var(--md-sys-color-on-primary);
+    transform: scaleX(1);
+}
+
+.tab-item:not(.active)::after {
+    background-color: transparent;
+    transform: scaleX(0);
+}
+
+.tab-item:hover:not(.active)::after {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scaleX(1);
+}
+
+.main-content {
+    overflow-y: auto;
+}
+
+.width-container {
+    width: min(100%, 700px);
+    padding: 1rem;
+    margin: 0 auto;
+}
+
+.custom-select {
+    position: relative;
+    width: 100%;
+}
+
+.select-trigger {
+    font-family: var(--md-ref-typeface-plain);
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    padding-right: 2.25rem;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-medium);
+    background-color: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition:
+        border-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        box-shadow var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        border-radius var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.select-trigger:focus,
+.select-trigger.active {
+    outline: none;
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 2px rgba(121, 85, 72, 0.2);
+    background-color: var(--md-sys-color-surface);
+}
+
+.open .select-trigger {
+    border-radius: var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium) 0 0;
+}
+
+.select-arrow {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+    pointer-events: none;
+}
+
+.custom-select.open .select-arrow {
+    transform: translateY(-50%) rotate(180deg);
+}
+
+.select-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--md-sys-color-surface);
+    border-radius: 0 0 var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium);
+    border: 1px solid var(--md-sys-color-outline);
+    border-top: none;
+    box-shadow: var(--md-elevation-3);
+    z-index: 10;
+    max-height: 12.5rem;
+    overflow-y: auto;
+    display: none;
+}
+
+.custom-select.open .select-options {
+    display: block;
+    animation: fadeIn var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.select-option {
+    padding: 0.625rem 0.75rem;
+    cursor: pointer;
+    transition: background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+    font-size: 0.875rem;
+}
+
+.select-option:hover {
+    background-color: var(--md-sys-color-surface-variant);
+}
+
+.select-option.selected {
+    background-color: rgba(121, 85, 72, 0.1);
+    color: var(--md-sys-color-primary);
+    font-weight: 500;
+}
+
+.select-optgroup {
+    padding: 0.5rem 0.75rem 0.25rem;
+    font-size: 0.75rem;
+    color: var(--md-sys-color-on-surface-variant);
+    font-weight: 500;
+}
+
+/* 筛选栏 - 可收合 */
+.filter-section {
+    margin-bottom: 1.25rem;
+    border-radius: var(--md-sys-shape-corner-medium);
+    background-color: var(--md-sys-color-surface);
+    box-shadow: var(--md-elevation-1);
+    transition: box-shadow var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.filter-section:hover {
+    box-shadow: var(--md-elevation-2);
+}
+
+.filter-toggle {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    background-color: var(--md-sys-color-surface);
+    border: none;
+    justify-content: space-between !important;
+    cursor: pointer;
+    font-family: var(--md-ref-typeface-plain);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--md-sys-color-primary);
+    border-radius: var(--md-sys-shape-corner-medium);
+    transition: background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.filter-toggle:hover {
+    background-color: var(--md-sys-color-surface-variant);
+}
+
+.filter-section.expanded .filter-toggle {
+    border-radius: var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium) 0 0;
+}
+
+.filter-toggle .material-symbols-rounded {
+    transition: transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized);
+}
+
+.filter-section.expanded .filter-toggle .material-symbols-rounded {
+    transform: rotate(180deg);
+}
+
+.filter-content {
+    display: none;
+    padding: 1rem;
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.filter-section.expanded .filter-content {
+    display: block;
+    animation: fadeIn var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+
+.filter-bar {
+    display: flex;
+    gap: 0.75rem;
+    flex-direction: column;
+}
+
+.filter-bar input,
+.filter-bar button {
+    font-family: var(--md-ref-typeface-plain);
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+    min-width: 0;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-medium);
+    background-color: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    transition:
+        border-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        box-shadow var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.filter-bar input:focus,
+.filter-bar button:focus {
+    outline: none;
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 2px rgba(121, 85, 72, 0.2);
+}
+
+.filter-bar button {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition:
+        background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.filter-bar button:hover {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
+
+.filter-bar button:active {
+    transform: scale(0.95);
+}
+
+.filter-reset {
+    background-color: var(--md-sys-color-surface-variant) !important;
+    color: var(--md-sys-color-on-surface-variant) !important;
+}
+
+.filter-reset:hover {
+    background-color: var(--md-sys-color-outline-variant) !important;
+}
+
+/* 餐食卡片 - Material 3 Card */
+.meal-card {
+    background-color: var(--md-sys-color-surface);
+    border-radius: var(--md-sys-shape-corner-large);
+    box-shadow: var(--md-elevation-1);
+    margin-bottom: 1rem;
+    overflow: hidden;
+    transition:
+        transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+        box-shadow var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    cursor: pointer;
+    transform-origin: center top;
+    opacity: 0;
+    animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(1.25rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.meal-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--md-elevation-3);
+}
+
+.meal-card:last-child {
+    margin-bottom: 6em;
+}
+
+.card-image {
+    position: relative;
+    height: 11.25rem;
+    overflow: hidden;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--md-sys-motion-duration-long) cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.2s ease-in-out !important;
+}
+
+.meal-card:hover .card-image img {
+    transform: scale(1.05);
+}
+
+.card-restaurant-badge {
+    z-index: 1;
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+    transform: translateX(-0.625rem);
+    opacity: 0;
+    animation: fadeInLeft var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards 0.2s;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-0.625rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.card-content {
+    padding: 1rem;
+}
+
+.card-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--md-sys-color-on-surface);
+}
+
+.card-subtitle {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--md-sys-color-primary);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.card-subtitle .material-symbols-rounded {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.card-menu-preview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    margin-bottom: 0.75rem;
+}
+
+.menu-item-tag {
+    background-color: var(--md-sys-color-surface-variant);
+    color: var(--md-sys-color-on-surface-variant);
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    transform: translateY(0.3125rem);
+    opacity: 0;
+    animation: fadeInUp var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard) forwards;
+}
+
+.card-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface-variant);
+    transform: translateY(0.3125rem);
+    opacity: 0;
+    animation: fadeInUp var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard) forwards 0.3s;
+}
+
+.card-cost {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--md-sys-color-primary);
+}
+
+/* 浮动按钮 - Material 3 FAB */
+.fab-container {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 200;
+}
+
+.fab-button {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    color: var(--md-sys-color-on-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    box-shadow: var(--md-elevation-4);
+    transition: all var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    cursor: pointer;
+    border: none;
+    font-size: 1.5rem;
+}
+
+.fab-main {
+    background-color: var(--md-sys-color-primary);
+}
+
+.fab-main:hover {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    transform: scale(1.05);
+    box-shadow: var(--md-elevation-4);
+}
+
+.fab-main:active {
+    transform: scale(0.95);
+}
+
+/* 内容切换 */
+#records-content,
+#restaurants-content {
+    transition:
+        opacity var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+        visibility var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+        transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}
+
+/* 底部滑入式详情面板 - Material 3 Modal Bottom Sheet */
+.slide-up-panel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--md-sys-color-surface);
+    z-index: 300;
+    transition:
+        transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized),
+        opacity var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    transform: translateY(100%);
+    opacity: 0;
+    border-radius: var(--md-sys-shape-corner-large) var(--md-sys-shape-corner-large) 0 0;
+    max-height: 95dvh;
+    overflow-y: auto;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    overscroll-behavior: none;
+}
+
+.slide-up-panel.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.panel-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 299;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+
+.panel-backdrop.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 详情面板 */
+#detail-panel .panel-content {
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-image {
+    width: 100%;
+    /* height: 15rem; */
+    position: relative;
+}
+
+.panel-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--md-sys-motion-duration-long) var(--md-sys-motion-easing-standard);
+}
+
+.panel-actions {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.panel-action-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--md-elevation-2);
+    transition: all var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.panel-action-btn:hover {
+    background-color: white;
+    transform: scale(1.1);
+}
+
+.panel-action-btn:active {
+    transform: scale(0.95);
+}
+
+.panel-body {
+    padding: 1.25rem;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.panel-body h2 {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--md-sys-color-on-surface);
+    transform: translateY(0.625rem);
+    opacity: 0;
+    animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards 0.2s;
+}
+
+.panel-body h2 sub {
+    vertical-align: baseline;
+    font-size: small;
+    margin-left: 0.5em;
+}
+
+.panel-body h2 sub:empty {
+    display: none;
+}
+
+.panel-body h3 {
+    font-size: 1rem;
+    color: var(--md-sys-color-primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    transform: translateY(0.625rem);
+    opacity: 0;
+    animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards 0.3s;
+}
+
+.panel-body h3 .material-symbols-rounded {
+    font-size: 1.125rem;
+    opacity: 0.8;
+}
+
+.panel-menu-list {
+    margin: 1.25rem 0;
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+    padding-top: 1rem;
+    transform: translateY(0.625rem);
+    opacity: 0;
+    animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards 0.4s;
+}
+
+.panel-menu-title {
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.375rem 0;
+    font-size: 0.9375rem;
+    border-bottom: 1px dashed var(--md-sys-color-outline-variant);
+    transition: background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item:hover {
+    background-color: rgba(121, 85, 72, 0.03);
+}
+
+.menu-item-name {
+    color: var(--md-sys-color-on-surface);
+}
+
+.menu-item-price {
+    font-weight: 500;
+    color: var(--md-sys-color-primary);
+}
+
+.panel-detail {
+    margin-bottom: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface-variant);
+    line-height: 1.8;
+    transform: translateY(0.625rem);
+    opacity: 0;
+    animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards 0.5s;
+}
+
+.panel-body .detail-cost {
+    font-size: 1.125rem;
+    text-align: right;
+    font-weight: 700;
+    color: var(--md-sys-color-on-surface);
+    margin-top: 0.5rem;
+}
+
+.detail-actions {
+    display: flex;
+    gap: 0.625rem;
+    margin-top: 1.25rem;
+}
+
+.detail-action-btn {
+    flex: 1;
+    padding: 0.625rem;
+    border-radius: var(--md-sys-shape-corner-medium);
+    border: none;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    transition: all var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.edit-btn {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+.edit-btn:hover {
+    background-color: var(--md-sys-color-secondary);
+    color: var(--md-sys-color-on-secondary);
+}
+
+.delete-btn {
+    background-color: var(--md-sys-color-error-container);
+    color: var(--md-sys-color-on-error-container);
+}
+
+.delete-btn:hover {
+    background-color: var(--md-sys-color-error);
+    color: var(--md-sys-color-on-error);
+}
+
+.panel-close {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border-radius: 0;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+
+.panel-close:hover {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
+
+.panel-close:active {
+    transform: scale(0.98);
+}
+
+/* 新增/编辑表单浮层 - Material 3 Modal */
+.form-container {
+    padding: 1.5rem;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.form-header h2 {
+    font-size: 1.125rem;
+    color: var(--md-sys-color-on-surface);
+}
+
+.form-close {
+    background: none;
+    border: none;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition:
+        color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-close:hover {
+    color: var(--md-sys-color-on-surface);
+    transform: rotate(90deg);
+    background-color: var(--md-sys-color-surface-variant);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.625rem;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-medium);
+    font-family: var(--md-ref-typeface-plain);
+    font-size: 0.875rem;
+    font-weight: inherit;
+    background-color: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    transition:
+        border-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        box-shadow var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        border-radius var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--md-sys-color-primary);
+    box-shadow: 0 0 0 2px rgba(121, 85, 72, 0.2);
+}
+
+.auto-complete-container input:focus {
+    border-radius: var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium) 0 0;
+}
+
+.form-error {
+    font-size: 0.75rem;
+    color: var(--md-sys-color-error);
+    margin-top: 0.25rem;
+    display: none;
+    transition: opacity var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.form-group.error .form-error {
+    display: block;
+}
+
+.form-group.error input,
+.form-group.error select {
+    border-color: var(--md-sys-color-error);
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.form-button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: var(--md-sys-shape-corner-medium);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    font-family: var(--md-ref-typeface-plain);
+}
+
+.form-submit {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+}
+
+.form-submit:hover {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
+
+.form-submit:active {
+    transform: scale(0.98);
+}
+
+.form-cancel {
+    background-color: var(--md-sys-color-surface-variant);
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.form-cancel:hover {
+    background-color: var(--md-sys-color-outline-variant);
+}
+
+.form-cancel:active {
+    transform: scale(0.98);
+}
+
+/* 菜单项目列表样式 */
+.menu-items-container {
+    margin: 1.25rem 0;
+}
+
+.menu-items-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.menu-items-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface);
+}
+
+.add-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--md-sys-color-primary);
+    background: none;
+    border: none;
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition:
+        background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.add-menu-item:hover {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
+
+.add-menu-item:active {
+    transform: scale(0.95);
+}
+
+.menu-item-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    background-color: var(--md-sys-color-surface-variant);
+    border-radius: var(--md-sys-shape-corner-medium);
+    position: relative;
+    animation: fadeIn var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(0.625rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.menu-item-form .form-group {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.menu-item-form .form-group label {
+    display: none;
+}
+
+.remove-menu-item {
+    background: none;
+    border: none;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    align-self: center;
+    padding: 0.25rem;
+    transition:
+        color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.remove-menu-item:hover {
+    color: var(--md-sys-color-error);
+    transform: scale(1.1);
+}
+
+.remove-menu-item:active {
+    transform: scale(0.9);
+}
+
+.menu-total {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.75rem;
+    margin-top: 0.75rem;
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--md-sys-color-primary);
+}
+
+/* 图片上传样式 - 支持外部URL */
+.image-upload-container {
+    margin-bottom: 1.25rem;
+}
+
+.image-preview {
+    width: 100%;
+    height: 11.25rem;
+    border-radius: var(--md-sys-shape-corner-medium);
+    overflow: hidden;
+    border: 1px dashed var(--md-sys-color-outline);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.625rem;
+    position: relative;
+    background-color: var(--md-sys-color-surface-variant);
+    transition:
+        border-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.image-preview:hover {
+    border-color: var(--md-sys-color-primary);
+    background-color: var(--md-sys-color-primary-container);
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.upload-icon {
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 3rem;
+    transition: color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.image-preview:hover .upload-icon {
+    color: var(--md-sys-color-primary);
+}
+
+.upload-text {
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.875rem;
+    text-align: center;
+    margin-top: 0.625rem;
+}
+
+.image-url-input {
+    width: 100%;
+    padding: 0.625rem;
+    margin-bottom: 0.625rem;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-medium);
+    font-family: var(--md-ref-typeface-plain);
+    background-color: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+}
+
+.image-actions {
+    display: flex;
+    gap: 0.625rem;
+}
+
+.image-upload {
+    display: none;
+}
+
+.upload-btn,
+.url-btn {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border-radius: var(--md-sys-shape-corner-medium);
+    cursor: pointer;
+    font-size: 0.875rem;
+    text-align: center;
+    transition:
+        background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+.url-btn {
+    background-color: var(--md-sys-color-secondary);
+    color: var(--md-sys-color-on-secondary);
+}
+
+.upload-btn:hover {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+}
+
+.url-btn:hover {
+    background-color: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+}
+
+.upload-btn:active,
+.url-btn:active {
+    transform: scale(0.95);
+}
+
+.restaurant-list {
+    margin-top: 1rem;
+}
+
+.restaurant-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background-color: var(--md-sys-color-surface);
+    border-radius: var(--md-sys-shape-corner-medium);
+    margin-bottom: 0.75rem;
+    box-shadow: var(--md-elevation-1);
+    transition:
+        background-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+        transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
+        box-shadow var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    opacity: 0;
+    animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards;
+}
+
+.restaurant-item:hover {
+    background-color: var(--md-sys-color-surface-variant);
+    transform: translateX(4px);
+    box-shadow: var(--md-elevation-2);
+}
+
+.restaurant-header {
+    margin-bottom: 0.5rem;
+    padding-right: 1.5em;
+}
+
+.restaurant-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--md-sys-color-primary);
+}
+
+.restaurant-branch {
+    font-size: 0.9rem;
+    color: var(--md-sys-color-primary);
+}
+
+.restaurant-actions {
+    display: flex;
+    gap: 0rem;
+    position: absolute;
+    flex-direction: column;
+    right: 0.5em;
+    top: 0.5em;
+}
+
+.restaurant-action-btn {
+    background: none;
+    border: none;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    transition:
+        color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.restaurant-action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.restaurant-action-btn.edit:hover {
+    color: var(--md-sys-color-secondary);
+}
+
+.restaurant-action-btn.delete:hover {
+    color: var(--md-sys-color-error);
+}
+
+.restaurant-action-btn:active {
+    transform: scale(0.9);
+}
+
+.restaurant-address {
+    font-size: 0.7rem;
+    color: var(--md-sys-color-on-surface-variant);
+    /* margin-bottom: 0.25rem; */
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+}
+
+.restaurant-notes {
+    display: none;
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-top: 0.375rem;
+    padding-top: 0.375rem;
+    border-top: 1px dashed var(--md-sys-color-outline-variant);
+}
+
+.add-restaurant-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.625rem;
+    background-color: var(--md-sys-color-surface);
+    border: 1px dashed var(--md-sys-color-outline);
+    color: var(--md-sys-color-primary);
+    border-radius: var(--md-sys-shape-corner-medium);
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    font-weight: 500;
+}
+
+.add-restaurant-btn:hover {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    border-color: var(--md-sys-color-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--md-elevation-1);
+}
+
+.add-restaurant-btn:active {
+    transform: translateY(0);
+}
+
+/* 餐厅推荐列表 */
+.recommendations-list {
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 0.8em;
+    overflow-x: auto;
+}
+
+.recommendation-btn {
+    display: flex;
+    white-space: nowrap;
+    background-color: var(--md-sys-color-primary-container);
+    padding: 0.75em 1em;
+    border-radius: 1em;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.recommendation-btn .source-badge {
+    font-size: 0.8em;
+    opacity: 0.8;
+}
+
+.recommendations-title {
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+}
+
+.recommendations-title .material-symbols-rounded {
+    font-size: 1rem;
+    color: var(--md-sys-color-tertiary);
+}
+
+.recommendation-item {
+    padding: 0.375rem 0.75rem;
+    background-color: var(--md-sys-color-surface-variant);
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    white-space: nowrap;
+}
+
+.recommendation-item:hover {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    transform: translateY(-2px);
+}
+
+/* 空状态提示 */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--md-sys-color-on-surface-variant);
+    animation: fadeIn var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+
+.empty-state .material-symbols-rounded {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--md-sys-color-outline);
+    transition: transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized);
+}
+
+.empty-state:hover .material-symbols-rounded {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.empty-state h3 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    color: var(--md-sys-color-on-surface);
+}
+
+.empty-state p {
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    max-width: 18.75rem;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.empty-state button {
+    padding: 0.5rem 1rem;
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    border-radius: var(--md-sys-shape-corner-medium);
+    cursor: pointer;
+    transition: all var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+}
+
+.empty-state button:hover {
+    background-color: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    transform: translateY(-2px);
+    box-shadow: var(--md-elevation-2);
+}
+
+.empty-state button:active {
+    transform: translateY(0);
+}
+
+/* 提示动画 */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pulse {
+    animation: pulse 1.5s infinite var(--md-sys-motion-easing-standard);
+}
+
+/* 餐厅选择提示 */
+.restaurant-selection-hint {
+    font-size: 0.75rem;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* 摇动动画 */
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: translateX(-5px);
+    }
+
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: translateX(5px);
+    }
+}
+
+/* Toast 提示 - Material 3 Snackbar */
+.toast-notification {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(6.25rem);
+    background-color: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    padding: 0.625rem 1rem;
+    border-radius: var(--md-sys-shape-corner-medium);
+    z-index: 9999;
+    transition:
+        transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized),
+        opacity var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--md-elevation-4);
+    max-width: calc(100% - 2rem);
+}
+
+.toast-notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+/* 导航提示 */
+.nav-hint {
+    position: fixed;
+    top: 4.375rem;
+    right: 1.25rem;
+    background-color: var(--md-sys-color-surface);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--md-sys-shape-corner-medium);
+    font-size: 0.75rem;
+    color: var(--md-sys-color-on-surface);
+    box-shadow: var(--md-elevation-2);
+    z-index: 90;
+    max-width: 12.5rem;
+    display: none;
+}
+
+.nav-hint.show {
+    display: block;
+    animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards;
+}
+
+/* 常用餐點推薦樣式 */
+.menu-recommendations {
+    margin: 1.5rem 0;
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: var(--md-sys-shape-corner-medium);
+    font-size: 0.8em;
+}
+
+.menu-recommendations h4 {
+    margin: 1em 1em 0 1em;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 1em;
+    font-weight: 500;
+}
+
+.recommendations-scroll {
+    display: flex;
+    gap: 0.8em;
+    overflow-x: auto;
+    padding: 1em;
+    scrollbar-width: thin;
+}
+
+.recommendation-menu-item {
+    background-color: var(--md-sys-color-primary-container);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 1em;
+    padding: 0.8rem;
+    min-width: 8em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* .recommendation-menu-item:hover {} */
+
+.recommendation-menu-item .name {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+    display: block;
+}
+
+.recommendation-menu-item .price {
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.9rem;
+}
+
+/* 餐廳常用餐點管理樣式 */
+.restaurant-menu-section {
+    margin: 1.5rem 0;
+}
+
+.restaurant-menu-section h4 {
+    margin: 0 0 0.8rem 0;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.restaurant-menu-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    max-height: 150px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.restaurant-menu-item {
+    background-color: var(--md-sys-color-surface-container-low);
+    border-radius: 6px;
+    padding: 0.5rem 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.restaurant-menu-item .price {
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.9rem;
+}
+
+.restaurant-menu-item .remove-btn {
+    color: var(--md-sys-color-error);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.2rem;
+}
+
+.add-restaurant-menu-item {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+}
+
+.add-restaurant-menu-item input {
+    flex: 1;
+    min-width: 120px;
+}
+
+.add-restaurant-menu-item button {
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    border-radius: 24px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+/* 統一菜單項目樣式（與記錄明細一致） */
+.restaurant-menu-section .menu-items-list {
+    margin-bottom: 1rem;
+}
+
+.restaurant-menu-section .add-menu-item-btn {
+    margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    background-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    border-radius: 24px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+}
+
+/* 餐廳新增時的菜品推薦樣式 */
+#restaurant-menu-recommendations {
+    margin-bottom: 1rem;
+    padding: 0.8rem;
+    background-color: var(--md-sys-color-surface-container-low);
+    border-radius: 8px;
+}
+
+/* 常用餐廳界面的餐點預覽 */
+.restaurant-menu-items-preview {
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed var(--md-sys-color-outline-variant);
+    line-height: 1;
+}
+
+.restaurant-menu-items-preview h4 {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-bottom: 0.5rem;
+}
+
+.restaurant-menu-items-preview .menu-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.menu-item-preview {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    animation: fadeIn 0.3s ease forwards;
+    opacity: 0;
+}
+
+.menu-item-preview .menu-item-name {
+    color: var(--md-sys-color-on-surface);
+}
+
+.menu-item-preview .menu-item-price {
+    color: var(--md-sys-color-primary);
+    font-weight: 500;
+}
+
+.restaurant-menu-items-preview.empty {
+    text-align: center;
+    padding: 1rem 0;
+    color: var(--md-sys-color-on-surface-variant);
+}
+
+.restaurant-menu-items-preview.empty .material-symbols-rounded {
+    font-size: 24px;
+    margin-bottom: 0.3rem;
+    opacity: 0.7;
+}
+
+/* 自動完成容器樣式增強 - 與整整整體下拉組件風格 */
+.auto-complete-container {
+    position: relative;
+    margin-bottom: 1rem;
+    /* 與表單其他組件間距統一 */
+}
+
+/* 下拉建議框樣式 - 對齊自定義選擇器 */
+.auto-complete-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline);
+    border-top: none;
+    border-radius: 0 0 var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium);
+    box-shadow: var(--md-elevation-3);
+    z-index: 10;
+    max-height: 18.75rem;
+    overflow-y: auto;
+    display: none;
+    animation: fadeIn var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+}
+
+/* 建議項樣式優化 */
+.auto-complete-suggestion {
+    padding: 0.625rem 0.75rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+}
+
+/* 建議項hover狀態 - 與下拉選擇器一致 */
+.auto-complete-suggestion:hover {
+    background-color: var(--md-sys-color-surface-variant);
+}
+
+/* 鍵盤導航選中狀態（active類） */
+.auto-complete-suggestion.active {
+    background-color: rgba(121, 85, 72, 0.1);
+    color: var(--md-sys-color-primary);
+    font-weight: 500;
+}
+
+/* 次數標識樣式優化 */
+.auto-complete-suggestion .count-badge {
+    font-size: 0.75rem;
+    color: var(--md-sys-color-on-surface-variant);
+    background-color: var(--md-sys-color-outline-variant);
+    padding: 0.125rem 0.375rem;
+    border-radius: 1em;
+    margin-left: 0.5rem;
+}
+
+/* 常用標識樣式（新增） */
+.auto-complete-suggestion .favorite-badge {
+    font-size: 0.75rem;
+    color: var(--md-sys-color-on-tertiary-container);
+    background-color: var(--md-sys-color-tertiary-container);
+    padding: 0.125rem 0.375rem;
+    border-radius: 1em;
+    margin-left: 0.5rem;
+}
+
+/* 空狀態提示樣式（新增） - 與其他空狀態統一 */
+.auto-complete-suggestions .empty-suggestion {
+    padding: 1rem;
+    text-align: center;
+    color: var(--md-sys-color-on-surface-variant);
+    font-size: 0.875rem;
+}
