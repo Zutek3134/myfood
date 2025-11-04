@@ -19,59 +19,70 @@
     font-weight: 700;
 }
 
-/* 基础变量 - Material Design 3 核心规范 */
 :root {
-    /* 色彩系统 - 动态主题色 */
-    --md-sys-color-primary: #795548;
-    --md-sys-color-primary-container: #EFE0D9;
-    --md-sys-color-on-primary: #FFFFFF;
-    --md-sys-color-on-primary-container: #2C170F;
+    --md-sys-color-primary: rgb(143 76 55);
+    --md-sys-color-surface-tint: rgb(143 76 55);
+    --md-sys-color-on-primary: rgb(255 255 255);
+    --md-sys-color-primary-container: rgb(255 219 209);
+    --md-sys-color-on-primary-container: rgb(114 53 34);
+    --md-sys-color-secondary: rgb(119 87 78);
+    --md-sys-color-on-secondary: rgb(255 255 255);
+    --md-sys-color-secondary-container: rgb(255 219 209);
+    --md-sys-color-on-secondary-container: rgb(93 64 55);
+    --md-sys-color-tertiary: rgb(107 93 47);
+    --md-sys-color-on-tertiary: rgb(255 255 255);
+    --md-sys-color-tertiary-container: rgb(245 225 167);
+    --md-sys-color-on-tertiary-container: rgb(82 70 25);
+    --md-sys-color-error: rgb(186 26 26);
+    --md-sys-color-on-error: rgb(255 255 255);
+    --md-sys-color-error-container: rgb(255 218 214);
+    --md-sys-color-on-error-container: rgb(147 0 10);
+    --md-sys-color-background: rgb(255 248 246);
+    --md-sys-color-on-background: rgb(35 25 23);
+    --md-sys-color-surface: rgb(255 248 246);
+    --md-sys-color-on-surface: rgb(35 25 23);
+    --md-sys-color-surface-variant: rgb(245 222 215);
+    --md-sys-color-on-surface-variant: rgb(83 67 63);
+    --md-sys-color-outline: rgb(133 115 110);
+    --md-sys-color-outline-variant: rgb(216 194 188);
+    --md-sys-color-shadow: rgb(0 0 0);
+    --md-sys-color-scrim: rgb(0 0 0);
+    --md-sys-color-inverse-surface: rgb(57 46 43);
+    --md-sys-color-inverse-on-surface: rgb(255 237 232);
+    --md-sys-color-inverse-primary: rgb(255 181 159);
+    --md-sys-color-primary-fixed: rgb(255 219 209);
+    --md-sys-color-on-primary-fixed: rgb(58 11 1);
+    --md-sys-color-primary-fixed-dim: rgb(255 181 159);
+    --md-sys-color-on-primary-fixed-variant: rgb(114 53 34);
+    --md-sys-color-secondary-fixed: rgb(255 219 209);
+    --md-sys-color-on-secondary-fixed: rgb(44 21 15);
+    --md-sys-color-secondary-fixed-dim: rgb(231 189 178);
+    --md-sys-color-on-secondary-fixed-variant: rgb(93 64 55);
+    --md-sys-color-tertiary-fixed: rgb(245 225 167);
+    --md-sys-color-on-tertiary-fixed: rgb(35 27 0);
+    --md-sys-color-tertiary-fixed-dim: rgb(216 197 141);
+    --md-sys-color-on-tertiary-fixed-variant: rgb(82 70 25);
+    --md-sys-color-surface-dim: rgb(232 214 210);
+    --md-sys-color-surface-bright: rgb(255 248 246);
+    --md-sys-color-surface-container-lowest: rgb(255 255 255);
+    --md-sys-color-surface-container-low: rgb(255 241 237);
+    --md-sys-color-surface-container: rgb(252 234 229);
+    --md-sys-color-surface-container-high: rgb(247 228 224);
+    --md-sys-color-surface-container-highest: rgb(241 223 218);
 
-    --md-sys-color-secondary: #6B5A52;
-    --md-sys-color-secondary-container: #F1E3DB;
-    --md-sys-color-on-secondary: #FFFFFF;
-    --md-sys-color-on-secondary-container: #251912;
-
-    --md-sys-color-tertiary: #5C6A48;
-    --md-sys-color-tertiary-container: #E1EEC4;
-    --md-sys-color-on-tertiary: #FFFFFF;
-    --md-sys-color-on-tertiary-container: #1A2605;
-
-    --md-sys-color-error: #B3261E;
-    --md-sys-color-error-container: #FEEBE9;
-    --md-sys-color-on-error: #FFFFFF;
-    --md-sys-color-on-error-container: #410E0B;
-
-    --md-sys-color-background: #FFFBF8;
-    --md-sys-color-on-background: #1D1B19;
-    --md-sys-color-surface: #FFFBF8;
-    --md-sys-color-surface-variant: #F1E7E1;
-    --md-sys-color-on-surface: #1D1B19;
-    --md-sys-color-on-surface-variant: #51453D;
-
-    --md-sys-color-outline: #83746B;
-    --md-sys-color-outline-variant: #D4C4B8;
-
-    --md-sys-color-shadow: #000000;
-    --md-sys-color-scrim: #000000;
-
-    /* 排版系统 - Material Design 3 字体规范 */
     --md-ref-typeface-brand: 'Noto Sans', 'ZutekSans', 'PingFang TC', sans-serif;
     --md-ref-typeface-plain: 'Noto Sans', 'ZutekSans', 'PingFang TC', sans-serif;
 
-    /* 组件尺寸 */
-    --md-sys-shape-corner-small: 4px;
-    --md-sys-shape-corner-medium: 8px;
-    --md-sys-shape-corner-large: 16px;
+    --md-sys-shape-corner-small: 0.25rem;
+    --md-sys-shape-corner-medium: 0.5rem;
+    --md-sys-shape-corner-large: 1rem;
     --md-sys-shape-corner-full: 9999px;
 
-    /*  elevation 阴影系统 */
     --md-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
     --md-elevation-2: 0 2px 4px rgba(0, 0, 0, 0.1), 0 2px 3px rgba(0, 0, 0, 0.1);
     --md-elevation-3: 0 4px 5px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.1);
     --md-elevation-4: 0 5px 10px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.1);
 
-    /* 动画曲线 */
     --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
     --md-sys-motion-easing-standard: cubic-bezier(0.4, 0, 0.2, 1);
     --md-sys-motion-duration-short: 200ms;
@@ -118,6 +129,7 @@ body {
         'GRAD' 0,
         'opsz' 24;
     font-size: 1.4em;
+    max-width: 1.4em;
 }
 
 button:has(.material-symbols-rounded) {
@@ -248,7 +260,7 @@ button:has(.material-symbols-rounded) {
     padding-right: 2.25rem;
     border: 1px solid var(--md-sys-color-outline);
     border-radius: var(--md-sys-shape-corner-medium);
-    background-color: var(--md-sys-color-surface);
+    background-color: var(--md-sys-color-surface-container-lowest);
     color: var(--md-sys-color-on-surface);
     cursor: pointer;
     display: flex;
@@ -286,12 +298,15 @@ button:has(.material-symbols-rounded) {
     transform: translateY(-50%) rotate(180deg);
 }
 
-.select-options {
+.select-options,
+.auto-complete-suggestions {
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
-    background-color: var(--md-sys-color-surface);
+    background-color: rgba(from var(--md-sys-color-surface-container-lowest) r g b / 0.7);
+    -webkit-backdrop-filter: blur(1em);
+    backdrop-filter: blur(1em);
     border-radius: 0 0 var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium);
     border: 1px solid var(--md-sys-color-outline);
     border-top: none;
@@ -331,40 +346,25 @@ button:has(.material-symbols-rounded) {
     font-weight: 500;
 }
 
-/* 筛选栏 - 可收合 */
 .filter-section {
     margin-bottom: 1.25rem;
     border-radius: var(--md-sys-shape-corner-medium);
-    background-color: var(--md-sys-color-surface);
-    box-shadow: var(--md-elevation-1);
-    transition: box-shadow var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
-}
-
-.filter-section:hover {
-    box-shadow: var(--md-elevation-2);
+    background-color: transparent;
+    border: 1.5px solid var(--md-sys-color-outline-variant);
 }
 
 .filter-toggle {
     width: 100%;
     padding: 0.625rem 1rem;
-    background-color: var(--md-sys-color-surface);
+    background-color: transparent;
     border: none;
     justify-content: space-between !important;
     cursor: pointer;
     font-family: var(--md-ref-typeface-plain);
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-surface-variant);
     border-radius: var(--md-sys-shape-corner-medium);
-    transition: background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
-}
-
-.filter-toggle:hover {
-    background-color: var(--md-sys-color-surface-variant);
-}
-
-.filter-section.expanded .filter-toggle {
-    border-radius: var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium) 0 0;
 }
 
 .filter-toggle .material-symbols-rounded {
@@ -377,8 +377,8 @@ button:has(.material-symbols-rounded) {
 
 .filter-content {
     display: none;
-    padding: 1rem;
-    border-top: 1px solid var(--md-sys-color-outline-variant);
+    padding: 1rem 0.7rem 0.7rem;
+    border-top: 1.5px dotted var(--md-sys-color-outline-variant);
 }
 
 .filter-section.expanded .filter-content {
@@ -393,14 +393,18 @@ button:has(.material-symbols-rounded) {
 }
 
 .filter-bar input,
-.filter-bar button {
+.filter-bar button,
+.form-group input,
+.form-group select,
+.form-group textarea {
     font-family: var(--md-ref-typeface-plain);
     font-size: 0.875rem;
+    font-weight: inherit;
     padding: 0.5rem 0.75rem;
     min-width: 0;
     border: 1px solid var(--md-sys-color-outline);
     border-radius: var(--md-sys-shape-corner-medium);
-    background-color: var(--md-sys-color-surface);
+    background-color: var(--md-sys-color-surface-container-lowest);
     color: var(--md-sys-color-on-surface);
     transition:
         border-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
@@ -409,7 +413,10 @@ button:has(.material-symbols-rounded) {
 }
 
 .filter-bar input:focus,
-.filter-bar button:focus {
+.filter-bar button:focus,
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: var(--md-sys-color-primary);
     box-shadow: 0 0 0 2px rgba(121, 85, 72, 0.2);
@@ -446,16 +453,12 @@ button:has(.material-symbols-rounded) {
     background-color: var(--md-sys-color-outline-variant) !important;
 }
 
-/* 餐食卡片 - Material 3 Card */
 .meal-card {
-    background-color: var(--md-sys-color-surface);
+    background-color: var(--md-sys-color-surface-container);
     border-radius: var(--md-sys-shape-corner-large);
-    box-shadow: var(--md-elevation-1);
     margin-bottom: 1rem;
     overflow: hidden;
-    transition:
-        transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
-        box-shadow var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    transition: transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
     cursor: pointer;
     transform-origin: center top;
     opacity: 0;
@@ -476,10 +479,10 @@ button:has(.material-symbols-rounded) {
 
 .meal-card:hover {
     transform: translateY(-4px);
-    box-shadow: var(--md-elevation-3);
 }
 
-.meal-card:last-child {
+.meal-card:last-child,
+.restaurant-item:last-child {
     margin-bottom: 6em;
 }
 
@@ -565,7 +568,7 @@ button:has(.material-symbols-rounded) {
 }
 
 .menu-item-tag {
-    background-color: var(--md-sys-color-surface-variant);
+    background-color: var(--md-sys-color-surface-dim);
     color: var(--md-sys-color-on-surface-variant);
     padding: 0.125rem 0.5rem;
     border-radius: 12px;
@@ -593,7 +596,6 @@ button:has(.material-symbols-rounded) {
     color: var(--md-sys-color-primary);
 }
 
-/* 浮动按钮 - Material 3 FAB */
 .fab-container {
     position: fixed;
     bottom: 1.5rem;
@@ -611,10 +613,27 @@ button:has(.material-symbols-rounded) {
     align-items: center;
     text-decoration: none;
     box-shadow: var(--md-elevation-4);
-    transition: all var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
     cursor: pointer;
     border: none;
     font-size: 1.5rem;
+    animation: fadeInGrow var(--md-sys-motion-duration-long) var(--md-sys-motion-easing-standard) forwards;
+    transition: all var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-emphasized);
+}
+
+@keyframes fadeInGrow {
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    70% {
+        transform: scale(1.25);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .fab-main {
@@ -632,7 +651,7 @@ button:has(.material-symbols-rounded) {
     transform: scale(0.95);
 }
 
-/* 内容切换 */
+
 #records-content,
 #restaurants-content {
     transition:
@@ -642,11 +661,11 @@ button:has(.material-symbols-rounded) {
 }
 
 .hide {
-    display: none;
+    display: none !important;
 }
 
 .show {
-    display: block;
+    display: block !important;
 }
 
 /* 底部滑入式详情面板 - Material 3 Modal Bottom Sheet */
@@ -751,9 +770,9 @@ button:has(.material-symbols-rounded) {
 }
 
 .panel-body h2 {
-    font-size: 1.25rem;
+    font-weight: 600;
     margin-bottom: 0.5rem;
-    color: var(--md-sys-color-on-surface);
+    color: var(--md-sys-color-on-surface-variant);
     transform: translateY(0.625rem);
     opacity: 0;
     animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards 0.2s;
@@ -770,20 +789,16 @@ button:has(.material-symbols-rounded) {
 }
 
 .panel-body h3 {
-    font-size: 1rem;
+    font-size: 0.8em;
+    font-weight: 500;
     color: var(--md-sys-color-primary);
-    margin-bottom: 1rem;
+    margin-bottom: 1em;
     display: flex;
     align-items: center;
-    gap: 0.375rem;
+    gap: 0.25em;
     transform: translateY(0.625rem);
     opacity: 0;
     animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards 0.3s;
-}
-
-.panel-body h3 .material-symbols-rounded {
-    font-size: 1.125rem;
-    opacity: 0.8;
 }
 
 .panel-menu-list {
@@ -968,29 +983,9 @@ button:has(.material-symbols-rounded) {
 .form-group select,
 .form-group textarea {
     width: 100%;
-    padding: 0.625rem;
-    border: 1px solid var(--md-sys-color-outline);
-    border-radius: var(--md-sys-shape-corner-medium);
-    font-family: var(--md-ref-typeface-plain);
-    font-size: 0.875rem;
-    font-weight: inherit;
-    background-color: var(--md-sys-color-surface);
-    color: var(--md-sys-color-on-surface);
-    transition:
-        border-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
-        box-shadow var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
-        border-radius var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    outline: none;
-    border-color: var(--md-sys-color-primary);
-    box-shadow: 0 0 0 2px rgba(121, 85, 72, 0.2);
-}
-
-.auto-complete-container input:focus {
+.auto-complete-container:has(.auto-complete-suggestions.show) input {
     border-radius: var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium) 0 0;
 }
 
@@ -1065,11 +1060,10 @@ button:has(.material-symbols-rounded) {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 0.75rem;
 }
 
 .menu-items-title {
-    font-size: 1rem;
+    font-size: 0.875em;
     font-weight: 500;
     color: var(--md-sys-color-on-surface);
 }
@@ -1101,13 +1095,15 @@ button:has(.material-symbols-rounded) {
 
 .menu-item-form {
     display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-    padding: 0.75rem;
-    background-color: var(--md-sys-color-surface-variant);
-    border-radius: var(--md-sys-shape-corner-medium);
+    gap: 0.25em;
+    padding: 0.5em 0;
     position: relative;
     animation: fadeIn var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    border-bottom: 1px dashed var(--md-sys-color-outline-variant);
+}
+
+.menu-item-form:last-child {
+    border-bottom: none;
 }
 
 @keyframes fadeIn {
@@ -1133,11 +1129,6 @@ button:has(.material-symbols-rounded) {
 
 .remove-menu-item {
     background: none;
-    border: none;
-    color: var(--md-sys-color-on-surface-variant);
-    cursor: pointer;
-    align-self: center;
-    padding: 0.25rem;
     transition:
         color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
         transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
@@ -1269,30 +1260,16 @@ button:has(.material-symbols-rounded) {
     transform: scale(0.95);
 }
 
-.restaurant-list {
-    margin-top: 1rem;
-}
-
 .restaurant-item {
     display: flex;
     flex-direction: column;
-    padding: 1rem;
+    padding: 0.8rem;
     background-color: var(--md-sys-color-surface);
     border-radius: var(--md-sys-shape-corner-medium);
     margin-bottom: 0.75rem;
-    box-shadow: var(--md-elevation-1);
-    transition:
-        background-color var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
-        transform var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard),
-        box-shadow var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard);
+    border: 1.5px solid var(--md-sys-color-outline-variant);
     opacity: 0;
     animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards;
-}
-
-.restaurant-item:hover {
-    background-color: var(--md-sys-color-surface-variant);
-    transform: translateX(4px);
-    box-shadow: var(--md-elevation-2);
 }
 
 .restaurant-header {
@@ -1303,12 +1280,12 @@ button:has(.material-symbols-rounded) {
 .restaurant-name {
     font-size: 1.2rem;
     font-weight: 700;
-    color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-surface-variant);
 }
 
 .restaurant-branch {
     font-size: 0.9rem;
-    color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-surface-variant);
 }
 
 .restaurant-actions {
@@ -1321,13 +1298,14 @@ button:has(.material-symbols-rounded) {
 }
 
 .restaurant-action-btn {
-    background: none;
+    background-color: transparent;
     border: none;
     color: var(--md-sys-color-on-surface-variant);
     cursor: pointer;
     transition:
         color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
-        transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
+        transform var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard),
+        background-color var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
     border-radius: 50%;
     width: 36px;
     height: 36px;
@@ -1454,7 +1432,6 @@ button:has(.material-symbols-rounded) {
     transform: translateY(-2px);
 }
 
-/* 空状态提示 */
 .empty-state {
     text-align: center;
     padding: 3rem 1rem;
@@ -1508,7 +1485,6 @@ button:has(.material-symbols-rounded) {
     transform: translateY(0);
 }
 
-/* 提示动画 */
 @keyframes pulse {
     0% {
         transform: scale(1);
@@ -1527,7 +1503,6 @@ button:has(.material-symbols-rounded) {
     animation: pulse 1.5s infinite var(--md-sys-motion-easing-standard);
 }
 
-/* 餐厅选择提示 */
 .restaurant-selection-hint {
     font-size: 0.75rem;
     color: var(--md-sys-color-on-surface-variant);
@@ -1535,7 +1510,6 @@ button:has(.material-symbols-rounded) {
     font-style: italic;
 }
 
-/* 摇动动画 */
 @keyframes shake {
 
     0%,
@@ -1559,14 +1533,13 @@ button:has(.material-symbols-rounded) {
     }
 }
 
-/* Toast 提示 - Material 3 Snackbar */
 .toast-notification {
     position: fixed;
     bottom: 1.5rem;
     left: 50%;
     transform: translateX(-50%) translateY(6.25rem);
-    background-color: var(--md-sys-color-surface);
-    color: var(--md-sys-color-on-surface);
+    background-color: var(--md-sys-color-tertiary);
+    color: var(--md-sys-color-tertiary-container);
     padding: 0.625rem 1rem;
     border-radius: var(--md-sys-shape-corner-medium);
     z-index: 9999;
@@ -1607,9 +1580,13 @@ button:has(.material-symbols-rounded) {
     animation: fadeInUp var(--md-sys-motion-duration-medium) var(--md-sys-motion-easing-standard) forwards;
 }
 
-/* 常用餐點推薦樣式 */
+.menu-recommendations:has(#menu-recommendations-list:empty) {
+    display: none;
+}
+
 .menu-recommendations {
-    margin: 1.5rem 0;
+    margin-top: 0.75rem;
+    margin-bottom: 1em;
     border: 1px solid var(--md-sys-color-outline);
     border-radius: var(--md-sys-shape-corner-medium);
     font-size: 0.8em;
@@ -1738,7 +1715,6 @@ button:has(.material-symbols-rounded) {
     cursor: pointer;
 }
 
-/* 餐廳新增時的菜品推薦樣式 */
 #restaurant-menu-recommendations {
     margin-bottom: 1rem;
     padding: 0.8rem;
@@ -1746,7 +1722,6 @@ button:has(.material-symbols-rounded) {
     border-radius: 8px;
 }
 
-/* 常用餐廳界面的餐點預覽 */
 .restaurant-menu-items-preview {
     margin-top: 0.8rem;
     padding-top: 0.8rem;
@@ -1798,32 +1773,11 @@ button:has(.material-symbols-rounded) {
     opacity: 0.7;
 }
 
-/* 自動完成容器樣式增強 - 與整整整體下拉組件風格 */
 .auto-complete-container {
     position: relative;
     margin-bottom: 1rem;
-    /* 與表單其他組件間距統一 */
 }
 
-/* 下拉建議框樣式 - 對齊自定義選擇器 */
-.auto-complete-suggestions {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background-color: var(--md-sys-color-surface);
-    border: 1px solid var(--md-sys-color-outline);
-    border-top: none;
-    border-radius: 0 0 var(--md-sys-shape-corner-medium) var(--md-sys-shape-corner-medium);
-    box-shadow: var(--md-elevation-3);
-    z-index: 10;
-    max-height: 18.75rem;
-    overflow-y: auto;
-    display: none;
-    animation: fadeIn var(--md-sys-motion-duration-short) var(--md-sys-motion-easing-standard);
-}
-
-/* 建議項樣式優化 */
 .auto-complete-suggestion {
     padding: 0.625rem 0.75rem;
     cursor: pointer;
@@ -1834,19 +1788,16 @@ button:has(.material-symbols-rounded) {
     align-items: center;
 }
 
-/* 建議項hover狀態 - 與下拉選擇器一致 */
 .auto-complete-suggestion:hover {
     background-color: var(--md-sys-color-surface-variant);
 }
 
-/* 鍵盤導航選中狀態（active類） */
 .auto-complete-suggestion.active {
     background-color: rgba(121, 85, 72, 0.1);
     color: var(--md-sys-color-primary);
     font-weight: 500;
 }
 
-/* 次數標識樣式優化 */
 .auto-complete-suggestion .count-badge {
     font-size: 0.75rem;
     color: var(--md-sys-color-on-surface-variant);
@@ -1856,7 +1807,6 @@ button:has(.material-symbols-rounded) {
     margin-left: 0.5rem;
 }
 
-/* 常用標識樣式（新增） */
 .auto-complete-suggestion .favorite-badge {
     font-size: 0.75rem;
     color: var(--md-sys-color-on-tertiary-container);
@@ -1866,7 +1816,6 @@ button:has(.material-symbols-rounded) {
     margin-left: 0.5rem;
 }
 
-/* 空狀態提示樣式（新增） - 與其他空狀態統一 */
 .auto-complete-suggestions .empty-suggestion {
     padding: 1rem;
     text-align: center;

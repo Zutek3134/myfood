@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 通用自動完成工具類（增強調試輸出）
     class AutoComplete {
         constructor(config) {
             this.config = {
@@ -13,9 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ...config
             };
 
-            // if (this.config.inputElement) {
-            //     console.log(`初始化ACS: ${this.config.inputElement.id}`);
-            // }
+            this.clickOutsideHandler = this.handleClickOutside.bind(this);
 
             this.init();
         }
@@ -23,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         init() {
             const { inputElement, suggestionsContainer } = this.config;
             if (!inputElement || !suggestionsContainer) {
-                console.warn('ACS初始化失敗：缺少輸入框或建議容器');
+                console.warn('ACS 初始化失敗：缺少輸入框或建議容器');
                 return;
             }
 
@@ -50,6 +47,23 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             inputElement.addEventListener('keydown', (e) => this.handleKeyboard(e));
+
+            this.addClickOutsideListener();
+        }
+
+        addClickOutsideListener() {
+            document.addEventListener('click', this.clickOutsideHandler, true);
+        }
+
+        handleClickOutside(event) {
+            const { inputElement, suggestionsContainer } = this.config;
+
+            const isClickInsideInput = inputElement.contains(event.target);
+            const isClickInsideSuggestions = suggestionsContainer.contains(event.target);
+
+            if (!isClickInsideInput && !isClickInsideSuggestions) {
+                this.hideSuggestions();
+            }
         }
 
         filterAndRender(keyword) {
@@ -69,22 +83,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             suggestionsContainer.innerHTML = filtered.map(item => `
-                <div class="auto-complete-suggestion" 
-                     data-value="${item[filterKey]}"
-                     data-${filterKey}="${item[filterKey]}">
-                    ${displayTemplate(item)}
-                </div>
-            `).join('');
+            <div class="auto-complete-suggestion" 
+                 data-value="${item[filterKey]}"
+                 data-${filterKey}="${item[filterKey]}">
+                ${displayTemplate(item)}
+            </div>
+        `).join('');
             this.showSuggestions();
         }
 
         showSuggestions() {
-            this.config.suggestionsContainer.style.display = 'block';
+            this.config.suggestionsContainer.classList.add('show');
             this.config.suggestionsContainer.style.zIndex = '1000';
         }
 
         hideSuggestions() {
-            this.config.suggestionsContainer.style.display = 'none';
+            this.config.suggestionsContainer.classList.remove('show');
         }
 
         handleKeyboard(e) {
@@ -128,6 +142,98 @@ document.addEventListener('DOMContentLoaded', () => {
                 timer = setTimeout(() => func.apply(this, args), delay);
             };
         }
+
+        destroy() {
+            const { inputElement } = this.config;
+            if (inputElement) {
+                inputElement.removeEventListener('input', this.handleInput);
+                inputElement.removeEventListener('focus', this.handleFocus);
+                inputElement.removeEventListener('keydown', this.handleKeyboard);
+                delete inputElement.autoCompleteInstance;
+            }
+
+            document.removeEventListener('click', this.clickOutsideHandler, true);
+        }
+    }
+
+    class PanelManager {
+        constructor() {
+            this.currentOpenPanels = [];
+            this.elements = {
+                panelBackdrop: document.getElementById('panel-backdrop')
+            };
+
+            this.handleHashChange = (e) => {
+                const hasPanelHash = e.newURL.includes('#panel-');
+                if (this.currentOpenPanels.length > 0 && !hasPanelHash) {
+                    e.preventDefault();
+                    this.closeLastOpenPanel();
+                }
+            };
+
+            this.handleEscapeKey = (e) => {
+                if (e.key === 'Escape' && this.currentOpenPanels.length > 0) {
+                    e.preventDefault();
+                    this.closeLastOpenPanel();
+                }
+            };
+
+            window.addEventListener('hashchange', this.handleHashChange, true);
+            document.addEventListener('keydown', this.handleEscapeKey, true);
+        }
+
+        openPanel(panelId) {
+            const panel = document.getElementById(panelId);
+            if (!panel || !this.elements.panelBackdrop || this.currentOpenPanels.includes(panelId)) {
+                return;
+            }
+
+            panel.classList.add('show');
+            panel.scrollTop = 0;
+            this.elements.panelBackdrop.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            this.currentOpenPanels.push(panelId);
+
+            const uniqueHash = `#${new Date().getTime().toString().slice(5)}`;
+            const newUrl = window.location.href.split('#')[0] + uniqueHash;
+
+            history.pushState({ panelId }, '', newUrl);
+            // location.hash = uniqueHash;
+        }
+
+        closePanel(panelId) {
+            const panel = document.getElementById(panelId);
+            if (!panel || !this.elements.panelBackdrop) return;
+
+            panel.classList.remove('show');
+            this.currentOpenPanels = this.currentOpenPanels.filter(id => id !== panelId);
+
+            if (this.currentOpenPanels.length === 0) {
+                this.elements.panelBackdrop.classList.remove('show');
+                document.body.style.overflow = '';
+
+                const originalUrl = window.location.href.split('#')[0];
+                history.replaceState(null, '', originalUrl);
+            } else {
+                this.elements.panelBackdrop.classList.add('show');
+            }
+        }
+
+        closeLastOpenPanel() {
+            const lastPanelId = this.currentOpenPanels.at(-1);
+            if (lastPanelId) {
+                this.closePanel(lastPanelId);
+            }
+        }
+
+        closeAllPanels() {
+            this.currentOpenPanels.forEach(panelId => this.closePanel(panelId));
+        }
+
+        destroy() {
+            window.removeEventListener('hashchange', this.handleHashChange, true);
+            document.removeEventListener('keydown', this.handleEscapeKey, true);
+        }
     }
 
     class FoodDiaryApp {
@@ -154,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.elements = this.cacheDomElements();
             this.autoCompleteInstances = {};
             this.debounceTimers = {};
+            this.panelInstance = new PanelManager();
 
             this.init();
         }
@@ -331,7 +438,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast(message) {
             const toast = document.createElement('div');
             toast.className = 'toast-notification';
-            toast.innerHTML = `<span class="material-symbols-rounded" style="font-size:18px;">info</span>${message}`;
+            toast.textContent = message;
             document.body.appendChild(toast);
 
             setTimeout(() => toast.classList.add('show'), 10);
@@ -504,25 +611,6 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 console.error('收藏餐廳分店ACS元素不存在！');
             }
-
-            this.bindGlobalCloseForAllACS();
-        }
-
-        bindGlobalCloseForAllACS() {
-            document.addEventListener('click', (e) => {
-                const acsGroups = [
-                    { input: this.elements.restaurantName, container: this.elements.restaurantSuggestions },
-                    { input: this.elements.restaurantBranch, container: this.elements.branchSuggestions },
-                    { input: this.elements.frequentRestaurantName, container: this.elements.frequentRestaurantSuggestions },
-                    { input: this.elements.frequentRestaurantBranch, container: this.elements.frequentBranchSuggestions }
-                ];
-
-                acsGroups.forEach(({ input, container }) => {
-                    if (input && container && !input.contains(e.target) && !container.contains(e.target)) {
-                        container.style.display = 'none';
-                    }
-                });
-            });
         }
 
         getRestaurantSuggestions() {
@@ -897,7 +985,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const historyItems = this.getRecommendationsForRestaurant(restaurantName)
                 .filter(item => !customItems.some(c => c.name === item.name))
                 .map(item => ({ ...item, source: 'history' }))
-                .slice(0, 5);
+                // .slice(0, 5)
+                ;
 
             return [...customItems, ...historyItems];
         }
@@ -972,7 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (count >= 1) {
                 document.querySelectorAll('.menu-item-form .remove-menu-item').forEach(btn => {
-                    btn.style.display = 'block';
+                    btn.style.display = 'flex';
                 });
             }
 
@@ -990,47 +1079,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return total;
         }
 
-        openPanel(panelId) {
-            const panel = document.getElementById(panelId);
-            if (!panel || !this.elements.panelBackdrop) return;
-
-            panel.classList.add('show');
-            panel.scrollTop = 0;
-            this.elements.panelBackdrop.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-
-        closePanel(panelId) {
-            const panel = document.getElementById(panelId);
-            if (!panel || !this.elements.panelBackdrop) return;
-
-            panel.classList.remove('show');
-
-            if (!document.querySelector('.slide-up-panel.show')) {
-                this.elements.panelBackdrop.classList.remove('show');
-                document.body.style.overflow = '';
-            }
-        }
-
-        closeAllPanels() {
-            if (!this.elements.panelBackdrop) return;
-
-            document.querySelectorAll('.slide-up-panel').forEach(panel => panel.classList.remove('show'));
-            this.elements.panelBackdrop.classList.remove('show');
-            document.body.style.overflow = '';
-        }
-
         openAddMealForm() {
             if (!this.elements.addMealPanel || !this.elements.editMealId || !this.elements.formTitle) return;
 
             this.elements.formTitle.textContent = '新增用餐紀錄';
             this.elements.editMealId.value = '';
             this.resetMealForm();
-            this.openPanel('add-meal-panel');
+            this.panelInstance.openPanel('add-meal-panel');
         }
 
         closeAddForm() {
-            this.closePanel('add-meal-panel');
+            this.panelInstance.closePanel('add-meal-panel');
             this.resetMealForm();
         }
 
@@ -1049,7 +1108,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.form-group').forEach(group => group.classList.remove('error'));
 
             this.elements.mealDate.value = this.getLocalYMD();
-            console.log(new Date().toISOString());
+            // console.log(new Date().toISOString());
             this.elements.restaurantName.value = '';
             this.elements.restaurantBranch.value = '';
 
@@ -1220,11 +1279,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            this.openPanel('frequent-restaurant-panel');
+            this.panelInstance.openPanel('frequent-restaurant-panel');
         }
 
         closeRestaurantForm() {
-            this.closePanel('frequent-restaurant-panel');
+            this.panelInstance.closePanel('frequent-restaurant-panel');
             this.state.editingRestaurantId = null;
             this.state.currentRestaurantName = '';
         }
@@ -1332,7 +1391,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             this.elements.detailMenuItems.appendChild(fragment);
-            this.openPanel('detail-panel');
+            this.panelInstance.openPanel('detail-panel');
         }
 
         copyMealRecord(mealId) {
@@ -1343,7 +1402,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             this.elements.editMealId.value = '';
             this.elements.formTitle.textContent = '複製用餐紀錄';
-            this.openPanel('add-meal-panel');
+            this.panelInstance.openPanel('add-meal-panel');
 
             this.fillRestaurantInfo(meal.restaurant, meal.branch);
             this.elements.mealDate.value = this.getLocalYMD();
@@ -1353,7 +1412,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             this.calculateMenuTotal();
             this.showToast('成功複製');
-            this.closePanel('detail-panel');
+            this.panelInstance.closePanel('detail-panel');
             this.state.currentMealId = null;
         }
 
@@ -1365,7 +1424,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             this.elements.editMealId.value = mealId;
             this.elements.formTitle.textContent = '編輯用餐紀錄';
-            this.openPanel('add-meal-panel');
+            this.panelInstance.openPanel('add-meal-panel');
 
             this.fillRestaurantInfo(meal.restaurant, meal.branch);
             this.elements.mealDate.value = meal.date;
@@ -1374,14 +1433,13 @@ document.addEventListener('DOMContentLoaded', () => {
             this.elements.imageUrl.value = meal.img;
 
             this.calculateMenuTotal();
-            this.closePanel('detail-panel');
+            this.panelInstance.closePanel('detail-panel');
             this.state.currentMealId = null;
         }
 
         deleteMealRecord(mealId) {
             this.state.meals = this.state.meals.filter(meal => meal.id !== mealId);
             this.state.filteredMeals = this.state.filteredMeals.filter(meal => meal.id !== mealId);
-            // 改用壓縮儲存
             this.saveToStorageWithCompression(this.STORAGE_KEYS.MEALS, this.state.meals);
             this.updatePopularItemsFromMeals();
             this.renderMeals();
@@ -1408,14 +1466,12 @@ document.addEventListener('DOMContentLoaded', () => {
             this.renderMenuRecommendations(restaurantName);
         }
 
-        // 按日期先後排序（從早到晚，舊日期 → 新日期）
         sortMealsByDate() {
             this.state.meals.sort((a, b) => {
-                // 日期相同時，按添加時間（ID由時間戳生成）排序，確保穩定性
                 if (a.date === b.date) {
-                    return b.id.localeCompare(a.id); // 新添加的在同一天的後面
+                    return b.id.localeCompare(a.id);
                 }
-                return b.date.localeCompare(a.date); // 核心：按日期字符串排序
+                return b.date.localeCompare(a.date);
             });
         }
 
@@ -1451,8 +1507,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!img) {
                 const color = this.getRandomColor();
-                const imgText = restaurant.length > 6 ? `${restaurant.substring(0, 6)}...` : restaurant;
-                img = `https://dummyimage.com/600x400/${color}/FFFFFF?text=${imgText}`;
+                // const imgText = restaurant.length > 6 ? `${restaurant.substring(0, 6)}...` : restaurant;
+                img = `https://dummyimage.com/600x400/${color}/FFFFFF?text=${restaurant}`;
             }
 
             if (isEditMode) {
@@ -1518,7 +1574,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             img.onerror = () => {
                 this.elements.imagePreview.innerHTML = '<span class="material-symbols-rounded upload-icon">error</span>';
-                this.showToast('圖片載入失敗，請更換圖片或URL');
+                this.showToast('圖片載入失敗，請更換圖片或 URL');
                 this.state.currentImageData = null;
             };
 
@@ -1526,10 +1582,8 @@ document.addEventListener('DOMContentLoaded', () => {
             this.elements.imagePreview.appendChild(img);
         }
 
-        // 匯出匯入功能初始化
         initDataManagement() {
             if (this.elements.exportDataBtn) {
-                // 綁定到壓縮匯出方法
                 this.elements.exportDataBtn.addEventListener('click', () => this.exportDataCompressed());
             }
             if (this.elements.importDataBtn) {
@@ -1540,7 +1594,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 觸發匯入
         triggerImport() {
             if (this.elements.importFileInput) {
                 this.elements.importFileInput.value = '';
@@ -1548,7 +1601,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 驗證匯入數據格式
         validateImportData(data) {
             if (!data || typeof data !== 'object') return false;
             if (!Array.isArray(data.meals)) return false;
@@ -1557,7 +1609,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return true;
         }
 
-        // 壓縮匯出
         exportDataCompressed() {
             try {
                 const exportData = {
@@ -1576,7 +1627,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const date = this.getLocalYMD();
                 const newDate = date.split('-');
                 newDate[0] -= 1911;
-                a.download = `吃吃吃匯出壓縮檔_${newDate.join('')}.fdzip`;
+                a.download = `匯出壓縮檔_${newDate.join('')}.吃吃吃`;
                 document.body.appendChild(a);
                 a.click();
 
@@ -1592,7 +1643,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 解壓縮匯入（輔助方法）
         importDataCompressed(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1606,12 +1656,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     const importedData = JSON.parse(jsonString);
 
                     if (!this.validateImportData(importedData)) {
-                        this.showToast('文件格式不正確，請使用正確的備份文件');
+                        this.showToast('格式異常，請使用正確的文件');
                         return;
                     }
 
                     if (confirm('是否匯入資料？原紀錄將被覆蓋！')) {
-                        // 改用壓縮儲存
                         this.saveToStorageWithCompression(this.STORAGE_KEYS.MEALS, importedData.meals || []);
                         this.saveToStorageWithCompression(this.STORAGE_KEYS.RESTAURANTS, importedData.restaurants || []);
                         this.saveToStorageWithCompression(this.STORAGE_KEYS.POPULAR_ITEMS, importedData.popularItems || {});
@@ -1623,17 +1672,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         this.initAutoComplete();
                         this.updateCustomSelectOptions();
 
-                        this.showToast('數據匯入成功！');
+                        this.showToast('成功匯入');
                     }
                 } catch (error) {
                     console.error('解壓縮匯入失敗：', error);
-                    this.showToast('文件解壓縮錯誤，請檢查文件是否完好');
+                    this.showToast('解壓縮失敗');
                 }
             };
             reader.readAsArrayBuffer(file);
         }
 
-        // 統一處理匯入
         importData(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -1643,19 +1691,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.handleImportContent(e.target.result, file.name);
             };
 
-            if (file.name.endsWith('.fdzip')) {
+            if (file.name.endsWith('.吃吃吃')) {
                 reader.readAsArrayBuffer(file);
             } else {
                 reader.readAsText(file);
             }
         }
 
-        // 處理匯入內容
         handleImportContent(content, filename) {
             try {
                 let importedData;
 
-                if (filename.endsWith('.fdzip')) {
+                if (filename.endsWith('.吃吃吃')) {
                     const compressed = new Uint8Array(content);
                     const jsonString = pako.ungzip(compressed, { to: 'string' });
                     importedData = JSON.parse(jsonString);
@@ -1678,7 +1725,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (confirm('是否匯入資料？原紀錄將被覆蓋！')) {
-                    // 改用壓縮儲存
                     this.saveToStorageWithCompression(this.STORAGE_KEYS.MEALS, importedData.meals || []);
                     this.saveToStorageWithCompression(this.STORAGE_KEYS.RESTAURANTS, importedData.restaurants || []);
                     this.saveToStorageWithCompression(this.STORAGE_KEYS.POPULAR_ITEMS, importedData.popularItems || {});
@@ -1690,7 +1736,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     this.initAutoComplete();
                     this.updateCustomSelectOptions();
 
-                    this.showToast('數據匯入成功！');
+                    this.showToast('成功匯入');
                 }
             } catch (error) {
                 console.error('匯入失敗：', error);
@@ -1698,7 +1744,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 輔助方法：判斷是否為Base64（原代碼可能已有，若無需補充）
         isBase64(str) {
             try {
                 return btoa(atob(str)) === str;
@@ -1707,14 +1752,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 輔助方法：簡單解密（若無加密功能可刪除）
         simpleDecrypt(data) {
-            // 若無加密功能，可返回null或實現對應解密邏輯
             return null;
         }
 
         bindEvents() {
-            // 主標籤切換
             document.querySelectorAll('.tab-item').forEach(tab => {
                 tab.addEventListener('click', function () {
                     document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
@@ -1770,12 +1812,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (this.elements.detailClose) {
                 this.elements.detailClose.addEventListener('click', () => {
-                    this.closePanel('detail-panel');
+                    this.panelInstance.closePanel('detail-panel');
                     this.state.currentMealId = null;
                 });
             }
             if (this.elements.panelBackdrop) {
-                this.elements.panelBackdrop.addEventListener('click', () => this.closeAllPanels());
+                this.elements.panelBackdrop.addEventListener('click', () => this.panelInstance.closeAllPanels());
             }
 
             // 詳情頁按鈕
@@ -1793,7 +1835,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.elements.detailDeleteBtn.addEventListener('click', () => {
                     if (this.state.currentMealId && confirm('確定刪除？')) {
                         this.deleteMealRecord(this.state.currentMealId);
-                        this.closePanel('detail-panel');
+                        this.panelInstance.closePanel('detail-panel');
                     }
                 });
             }
@@ -1941,7 +1983,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         this.showToast('請輸入圖片 URL');
                         return;
                     }
-                    const newUrl = url.replace('https://drive.google.com/file/d/', '').replace('/view?usp=drive_link', '');
+                    const newUrl = url.split('?')[0].replace('https://drive.google.com/file/d/', '').replace('/view', '');
                     this.displayImage('https://lh3.googleusercontent.com/d/' + newUrl);
                 });
             }
