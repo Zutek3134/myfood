@@ -279,6 +279,7 @@ header {
     color: var(--md-sys-color-on-primary);
     box-shadow: var(--shadow-elevation-medium);
     z-index: 50;
+    transition: background-color var(--md-sys-motion-duration-short) ease-in-out;
 
     .widthContainer {
         padding: 1em 1.25em 0;
@@ -1196,6 +1197,41 @@ ul#mealLogs-list {
                     &:has(ul[data-type="eaten-recommendations-list"]:empty) {
                         display: none;
                     }
+
+                    h4 {
+                        margin: 1em;
+                        margin-bottom: 0.8em;
+                    }
+
+                    ul {
+                        display: flex;
+                        flex-direction: row;
+                        gap: 0.75em;
+                        overflow-x: auto;
+                        padding-left: 1em;
+                        padding-bottom: 1em;
+
+                        li {
+                            display: flex;
+                            flex-direction: column;
+                            padding: 0.5em 0.625em;
+                            background-color: var(--md-sys-color-primary-container);
+                            border-radius: 0.5em;
+                            white-space: nowrap;
+                            cursor: pointer;
+
+                            .menu-name {
+                                font-weight: 500;
+                                font-size: 0.85rem;
+                            }
+
+                            .menu-meta {
+                                font-size: 0.9em;
+                            }
+                        }
+                    }
+
+
                 }
 
                 .add-eaten-item {
