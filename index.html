@@ -10,261 +10,326 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
-    <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
-    <script src="js/imgLazyLoading/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/stylesheets/flatPickr.css">
+    <link id="colour-palette" rel="stylesheet" href="palettes/default.css">
 </head>
 
 <body>
-    <div class="panel-backdrop" id="panel-backdrop"></div>
+    <div id="panel-backdrop"></div>
 
-    <header class="app-bar">
-        <div class="app-bar-header">
-            <h1>吃吃吃吃吃吃吃</h1>
-            <div class="app-bar-actions">
-                <span class="material-symbols-rounded" id="export-data">cloud_download</span>
-                <span class="material-symbols-rounded" id="import-data">cloud_upload</span>
-                <input type="file" id="import-file" accept=".吃吃吃" style="display: none;">
+    <header>
+        <div class="widthContainer">
+            <div class="header-inner">
+                <h1>吃吃吃吃吃吃吃</h1>
+                <div class="header-actions">
+                    <span class="material-symbols-rounded" id="more-menu-trigger">more_vert</span>
+                    <div id="moreMenu-backdrop"></div>
+                    <div id="moreMenu">
+                        <ul data-type="more-dropdown-menu">
+                            <li class="more-dropdown-title">配色</li>
+                            <li id="theme-select-menu">
+                                <div class="theme-option default selected" data-theme="default" title="預設"></div>
+                                <div class="theme-option blue" data-theme="blue" title="藍色"></div>
+                                <div class="theme-option purple" data-theme="purple" title="紫色"></div>
+                                <div class="theme-option green" data-theme="green" title="綠色"></div>
+                                <div class="theme-option red" data-theme="red" title="紅色"></div>
+                            <li class="more-dropdown-title">資料</li>
+                            <li id="export-data">
+                                <span>匯出資料</span>
+                                <span class="material-symbols-rounded">cloud_download</span>
+                            </li>
+                            <li id="import-data">
+                                <span>匯入資料</span>
+                                <span class="material-symbols-rounded">cloud_upload</span>
+                            </li>
+                            <li id="delete-data" class="danger">
+                                <span>清除資料</span>
+                                <span class="material-symbols-rounded">delete_forever</span>
+                            </li>
+                            </li>
+                            <!-- <li class="more-dropdown-title">其他</li>
+                            <li>
+                                <span class="material-symbols-rounded">account_circle</span>
+                                <span>帳戶設定</span>
+                            </li>
+                            <li>
+                                <span class="material-symbols-rounded">privacy_tip</span>
+                                <span>隱私設定</span>
+                            </li>
+                            <li>
+                                <span class="material-symbols-rounded">help_center</span>
+                                <span>說明與支援</span>
+                            </li>
+                            <li>
+                                <span class="material-symbols-rounded">info</span>
+                                <span>關於應用程式</span>
+                            </li>
+                            <li>
+                                <span class="material-symbols-rounded">logout</span>
+                                <span>登出帳戶</span>
+                            </li> -->
+                        </ul>
+                    </div>
+                    <input type="file" id="import-file" accept=".myfood" class="display-none">
+                </div>
             </div>
+            <nav class="tabs">
+                <div class="tab-item active" data-tab="mealList">我的紀錄</div>
+                <div class="tab-item" data-tab="favStores">收藏餐廳</div>
+            </nav>
         </div>
-        <nav class="app-tabs">
-            <div class="tab-item active" data-tab="records">我的紀錄</div>
-            <div class="tab-item" data-tab="restaurants">收藏餐廳</div>
-        </nav>
     </header>
 
-    <main class="main-content">
-        <div class="width-container show">
-            <div id="records-content">
-                <div class="filter-section">
-                    <button class="filter-toggle" id="filter-toggle">
-                        <span style="display: flex;flex-direction: row;gap: 0.25em;align-items: center;"><span class="material-symbols-rounded" style="font-size:18px;vertical-align:middle;">filter_list</span> 篩選條件</span>
-                        <span class="material-symbols-rounded">arrow_drop_down</span>
+    <main>
+        <div class="widthContainer">
+            <div id="mealLogs-record">
+                <div id="filter-section">
+                    <button id="filter-toggle">
+                        <span class="msr-optimise"><span class="material-symbols-rounded">filter_list</span> 篩選條件</span>
+                        <span class="material-symbols-rounded filter-toggle-arrow">arrow_drop_down</span>
                     </button>
-                    <div class="filter-content" id="filter-content">
-                        <div class="filter-bar">
-                            <div class="custom-select" id="restaurant-filter-container">
-                                <div class="select-trigger">
-                                    <span>所有餐廳</span>
-                                    <span class="material-symbols-rounded select-arrow">arrow_drop_down</span>
-                                </div>
-                                <div class="select-options">
-                                    <div class="select-option selected" data-value="">所有餐廳</div>
-                                </div>
+                    <div id="filter-body">
+                        <div class="dropdown" id="dropdown-restaurant">
+                            <div class="dropdown-trigger">
+                                <span>所有餐廳</span>
+                                <span class="material-symbols-rounded dropdown-arrow">arrow_drop_down</span>
                             </div>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5em;">
-                                <input type="date" id="start-date" placeholder="開始日期">
-                                <input type="date" id="end-date" placeholder="結束日期">
-                            </div>
-                            <div style="display: flex; flex-direction: row; gap: 0.5em; justify-content: flex-end;">
-                                <button type="button" id="filter-button"><span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;">filter_list</span>篩選</button>
-                                <button type="button" id="reset-filter" class="filter-reset"><span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;">refresh</span>重置</button>
-                            </div>
+                            <ul data-type="dropdown"></ul>
+                        </div>
+                        <div style="position: relative;">
+                            <input type="text" id="filter-date-range-render" style="width: 100%;" placeholder="所有時間" readonly>
+                            <input type="date" id="filter-date-range" style="z-index: -1;position: absolute;bottom: 0;left: 0;opacity: 0;">
+                        </div>
+                        <div class="filter-actions">
+                            <button type="button" id="filter-reset" class="btn-danger"><span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;">refresh</span>重置</button>
+                            <button type="button" id="filter-apply" class="btn-primary"><span class="material-symbols-rounded" style="font-size:16px;vertical-align:middle;">filter_list</span>篩選</button>
                         </div>
                     </div>
                 </div>
-
-                <div id="meal-list">
-                </div>
-
-                <div id="empty-state" class="empty-state hide">
+                <ul id="mealLogs-list"></ul>
+                <div id="mealLogs-prompt" class="prompt display-none">
                     <span class="material-symbols-rounded">fastfood</span>
-                    <h3>還沒有餐食紀錄</h3>
-                    <p>點擊右下角按鈕新增你的第一筆紀錄吧</p>
+                    <h3>尚無餐食紀錄</h3>
+                    <p>點擊下方按鈕新增你的首筆紀錄吧</p>
                 </div>
             </div>
-            <div class="fab-container" id="fab-container">
-                <button class="fab-button fab-main" id="fab-main-button"><span class="material-symbols-rounded">add</span></button>
+            <div class="fab-container">
+                <button class="fab-button fab-main" id="open-mealLogs-panel"><span class="material-symbols-rounded">add</span></button>
             </div>
         </div>
-        <div class="width-container hide">
-            <div id="restaurants-content">
-                <div id="restaurant-list" class="restaurant-list"></div>
+        <div class="width-container display-none">
+            <div id="favStores-records">
+                <ul id="favStores-list"></ul>
+                <div id="favStores-prompt" class="prompt display-none">
+                    <span class="material-symbols-rounded">restaurant</span>
+                    <h3>尚無收藏餐廳</h3>
+                    <p>添加收藏餐廳後，新增紀錄時會被優先推薦</p>
+                </div>
             </div>
-            <div class="fab-container" id="fab-container">
-                <button class="fab-button fab-main" id="add-restaurant-btn"><span class="material-symbols-rounded">add</span></button>
+            <div class="fab-container">
+                <button class="fab-button fab-main" id="open-favStores-panel"><span class="material-symbols-rounded">add</span></button>
             </div>
         </div>
     </main>
 
-    <div id="detail-panel" class="slide-up-panel">
-        <div class="panel-content">
-            <div class="panel-image">
-                <div class="panel-actions">
-                    <button class="panel-action-btn copy-meal" id="detail-copy-btn">
-                        <span class="material-symbols-rounded" style="font-size:18px;color:#333;">content_copy</span>
-                    </button>
-                </div>
-                <img id="detail-img" src="" alt="餐食圖片">
-            </div>
-            <div class="panel-body">
-                <h2 id="detail-title"></h2>
-                <h3 id="detail-subtitle"><span class="material-symbols-rounded">event</span>
-                    <div id="detail-date"></div>
-                </h3>
-                <!-- <div class="panel-detail"></div> -->
+    <div class="panel-container">
+        <div id="panel-backdrop-raycast"></div>
 
-                <div class="panel-menu-list">
-                    <div class="panel-menu-title">點餐明細</div>
-                    <div id="detail-menu-items">
+        <div data-panel="detail-mealLogs" class="slide-up-panel display-none">
+            <div class="panel-content">
+                <div class="panel-image">
+                    <img src="" alt="餐食圖片">
+                </div>
+                <div class="panel-body">
+                    <h2></h2>
+                    <h3 style="animation-delay: 0.2s;"><span class="material-symbols-rounded">event</span>
+                        <div id="detail-date"></div>
+                    </h3>
+
+                    <div class="panel-menu-list">
+                        <h3 style="animation-delay: 0.3s;"><span class="material-symbols-rounded">receipt</span>
+                            <div class="panel-menu-title">明細</div>
+                        </h3>
+                        <div id="detail-menu-items"></div>
+                    </div>
+
+                    <div id="detail-cost">$ 0</div>
+
+                    <div class="detail-actions">
+                        <button class="detail-action-btn btn-primary-fixed" id="detail-copy-btn">
+                            <span class="material-symbols-rounded" style="font-size:18px;">content_copy</span> 複製
+                        </button>
+                        <button class="detail-action-btn btn-primary-fixed" id="detail-edit-btn">
+                            <span class="material-symbols-rounded" style="font-size:18px;">edit</span> 編輯
+                        </button>
+                        <button class="detail-action-btn btn-danger" id="detail-delete-btn">
+                            <span class="material-symbols-rounded" style="font-size:18px;">delete</span> 刪除
+                        </button>
                     </div>
                 </div>
-
-                <div class="detail-cost" id="detail-cost">$ 0</div>
-
-                <div class="detail-actions">
-                    <button class="detail-action-btn edit-btn" id="detail-edit-btn">
-                        <span class="material-symbols-rounded" style="font-size:18px;">edit</span> 編輯
-                    </button>
-                    <button class="detail-action-btn delete-btn" id="detail-delete-btn">
-                        <span class="material-symbols-rounded" style="font-size:18px;">delete</span> 刪除
-                    </button>
-                </div>
+                <button id="detail-close"><span class="material-symbols-rounded">close</span>關閉</button>
             </div>
-            <button class="panel-close" id="detail-close"><span class="material-symbols-rounded">close</span>關閉</button>
         </div>
-    </div>
 
-    <div id="add-meal-panel" class="slide-up-panel">
-        <div class="form-container">
-            <div class="form-header">
-                <h2 id="form-title">新增用餐紀錄</h2>
-                <button class="form-close" id="form-close"><span class="material-symbols-rounded">close</span></button>
-            </div>
-            <form id="add-meal-form">
-                <input type="hidden" id="edit-meal-id">
-
-                <div class="form-group image-upload-container">
-                    <label>餐點照片</label>
-                    <div class="image-preview" id="image-preview">
-                        <span class="material-symbols-rounded upload-icon">add_photo_alternate</span>
-                    </div>
-                    <input type="text" class="image-url-input" id="image-url" placeholder="輸入圖片 URL">
-                    <div class="image-actions">
-                        <button type="button" class="url-btn" id="load-image-url"><span class="material-symbols-rounded">link</span>使用 URL</button>
-                        <button type="button" class="url-btn" id="convert-drive-url"><span class="material-symbols-rounded">drive_export</span>使用 Drive</button>
-                    </div>
-                    <input type="file" id="meal-image-upload" class="image-upload" accept="image/*">
+        <div data-panel="add-mealLogs" class="slide-up-panel display-none">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2>新增用餐紀錄</h2>
+                    <button id="form-close"><span class="material-symbols-rounded">close</span></button>
                 </div>
+                <form>
+                    <input type="hidden" id="edit-meal-id">
 
-                <div class="form-group">
-                    <label for="restaurant-name">餐廳名稱 <span style="color:var(--md-sys-color-error);">*</span></label>
-                    <div class="auto-complete-container">
-                        <input type="text" id="restaurant-name" class="restaurant-name" placeholder="輸入餐廳名稱">
-                        <div id="restaurant-suggestions" class="auto-complete-suggestions"></div>
+                    <div class="form-group image-upload-container">
+                        <label>餐點照片</label>
+                        <div id="image-preview">
+                            <span class="material-symbols-rounded upload-icon">add_photo_alternate</span>
+                        </div>
+                        <input type="text" id="image-url" placeholder="圖片網址">
+                        <div class="image-actions">
+                            <button type="button" class="btn-primary-fixed" id="load-image-url"><span class="material-symbols-rounded">link</span>使用 URL</button>
+                            <button type="button" class="btn-primary-fixed" id="convert-drive-url"><span class="material-symbols-rounded">drive_export</span>使用 Drive</button>
+                        </div>
+                        <input type="file" id="eaten-image-upload" class="display-none" accept="image/*">
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label for="restaurant-branch">分店</label>
-                    <div class="auto-complete-container">
-                        <input type="text" id="restaurant-branch" class="restaurant-branch" placeholder="輸入分店名稱">
-                        <div id="branch-suggestions" class="auto-complete-suggestions"></div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="meal-date">日期 <span style="color:var(--md-sys-color-error);">*</span></label>
-                    <input type="date" id="meal-date" name="meal-date" required>
-                    <div class="form-error">請選擇日期</div>
-                </div>
-
-                <div class="menu-items-container">
-                    <div class="menu-items-header">
-                        <div class="menu-items-title">明細 <span style="color:var(--md-sys-color-error);">*</span></div>
-                    </div>
-                    <div class="menu-recommendations">
-                        <h4>推薦菜品</h4>
-                        <div id="menu-recommendations-list" class="recommendations-scroll"></div>
-                    </div>
-                    <div id="menu-items-list">
-                        <div class="menu-item-form">
-                            <div class="form-group">
-                                <label for="menu-item-0-name">菜品名稱</label>
-                                <input type="text" id="menu-item-0-name" class="menu-item-name" placeholder="菜品名稱" required>
-                                <div class="form-error">請輸入菜品名稱</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="menu-item-0-price">價格</label>
-                                <input type="number" id="menu-item-0-price" class="menu-item-price" min="0" step="1" placeholder="0" required>
-                                <div class="form-error">請輸入有效價格</div>
-                            </div>
-                            <button type="button" class="remove-menu-item" style="display:none;"><span class="material-symbols-rounded" style="font-size:20px;">close</span></button>
+                    <div class="form-group">
+                        <label for="eaten-restaurant-name">餐廳 <span style="color:var(--md-sys-color-error);">*</span></label>
+                        <div class="auto-complete-container">
+                            <input type="text" id="eaten-restaurant-name" placeholder="餐廳名稱" required>
+                            <ul data-type="autocomplete" id="eaten-restaurant-acs"></ul>
+                            <div class="form-error">請輸入餐廳名稱</div>
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: flex-end;">
-                        <button type="button" class="add-menu-item" id="add-menu-item-btn">
-                            <span class="material-symbols-rounded" style="font-size:18px;">add</span> 新增菜品
-                        </button>
-                    </div>
-                    <div class="menu-total">
-                        <span>合計：</span>
-                        <span id="menu-total-amount">$ 0</span>
-                    </div>
-                </div>
 
-                <div class="form-actions">
-                    <!-- <button type="button" class="form-button form-cancel" id="form-cancel-btn"><span class="material-symbols-rounded">cancel</span>取消</button> -->
-                    <button type="submit" class="form-button form-submit"><span class="material-symbols-rounded">save</span>儲存</button>
-                </div>
-            </form>
-        </div>
-    </div>
+                    <div class="form-group" style="margin-top: -0.5rem;">
+                        <div class="auto-complete-container">
+                            <input type="text" id="eaten-restaurant-branch" placeholder="分店名稱（選填）">
+                            <ul data-type="autocomplete" id="eaten-branch-acs"></ul>
+                        </div>
+                    </div>
 
-    <div id="frequent-restaurant-panel" class="slide-up-panel">
-        <div class="form-container">
-            <div class="form-header">
-                <h2 id="frequent-restaurant-form-title">添加收藏餐廳</h2>
-                <button class="form-close" id="frequent-restaurant-close"><span class="material-symbols-rounded">close</span></button>
+                    <div class="form-group" style="position: relative;">
+                        <label for="eaten-date">日期 <span style="color:var(--md-sys-color-error);">*</span></label>
+                        <input type="text" id="eaten-date-render" readonly required>
+                        <input type="datetime-local" id="eaten-date" style="z-index: -1;position: absolute;bottom: 0;left: 0;">
+                        <div class="form-error">請選擇日期</div>
+                    </div>
+
+                    <div class="eaten-container">
+                        <div class="eaten-header">
+                            <label class="eaten-title">明細 <span style="color:var(--md-sys-color-error);">*</span></label>
+                        </div>
+                        <div class="eaten-recommendations">
+                            <h4>推薦菜品</h4>
+                            <ul data-type="eaten-recommendations-list" class="recommendations-scroll"></ul>
+                        </div>
+                        <ul data-type="eaten-list">
+                            <li>
+                                <div class="form-group">
+                                    <label for="menu-item-0-name">名稱</label>
+                                    <input type="text" id="eaten-item-0-name" data-type="name" placeholder="菜品" required>
+                                    <div class="form-error">請輸入菜品名稱</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="menu-item-0-price">單價</label>
+                                    <input type="number" id="eaten-item-0-price" data-type="price" step="1" placeholder="單價" required>
+                                    <div class="form-error">請輸入單價</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="menu-item-0-note">詳細備注（選填）</label>
+                                    <input type="text" id="eaten-item-0-note" data-type="note" placeholder="備注（選填）">
+                                </div>
+                                <div class="form-group">
+                                    <label for="menu-item-0-amount">數量</label>
+                                    <input type="number" id="eaten-item-0-amount" data-type="amount" min="1" step="1" placeholder="數量" required>
+                                    <div class="form-error">請輸入有效數量</div>
+                                </div>
+                                <button type="button" class="remove-eaten-item btn-danger"><span class="material-symbols-rounded" style="font-size:20px;">delete</span></button>
+                            </li>
+                        </ul>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button type="button" class="add-eaten-item">
+                                <span class="material-symbols-rounded" style="font-size:18px;">add</span> 添加品項
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <label for="eaten-sum">合計</label>
+                            <input type="text" id="eaten-sum" value="0" readonly style="text-align: right;">
+                        </div>
+                        <!-- <div class="eaten-totalPrice-holder">
+                            <span>合計：</span>
+                            <span id="eaten-total-amount">$ 0</span>
+                        </div> -->
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary form-submit" style="width: 100%;"><span class="material-symbols-rounded">save</span>儲存</button>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <form id="frequent-restaurant-form">
-                <input type="hidden" id="restaurant-id">
-                <div class="form-group">
-                    <label for="frequent-restaurant-name">餐廳名稱 <span style="color:var(--md-sys-color-error);">*</span></label>
-                    <div class="auto-complete-container">
-                        <input type="text" id="frequent-restaurant-name" name="frequent-restaurant-name" placeholder="輸入餐廳名稱" required>
-                        <div class="form-error">請輸入餐廳名稱</div>
-                        <div id="frequent-restaurant-suggestions" class="auto-complete-suggestions"></div>
+        <div data-panel="add-favStores" class="slide-up-panel display-none">
+            <div class="form-container">
+                <div class="form-header">
+                    <h2 id="frequent-restaurant-form-title">添加收藏餐廳</h2>
+                    <button class="form-close" id="frequent-restaurant-close"><span class="material-symbols-rounded">close</span></button>
+                </div>
+
+                <form id="frequent-restaurant-form">
+                    <input type="hidden" id="restaurant-id">
+                    <div class="form-group">
+                        <label for="frequent-restaurant-name">餐廳 <span style="color:var(--md-sys-color-error);">*</span></label>
+                        <div class="auto-complete-container">
+                            <input type="text" id="frequent-restaurant-name" name="frequent-restaurant-name" placeholder="輸入餐廳名稱" required>
+                            <div class="form-error">請輸入餐廳名稱</div>
+                            <div id="frequent-restaurant-suggestions" class="auto-complete-suggestions"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="frequent-restaurant-branch">分店</label>
-                    <div class="auto-complete-container">
-                        <input type="text" id="frequent-restaurant-branch" class="restaurant-branch" placeholder="輸入分店名稱">
-                        <div id="frequent-branch-suggestions" class="auto-complete-suggestions"></div>
+                    <div class="form-group" style="margin-top: -0.5rem;">
+                        <label class="hide" for="frequent-restaurant-branch">分店</label>
+                        <div class="auto-complete-container">
+                            <input type="text" id="frequent-restaurant-branch" class="restaurant-branch" placeholder="輸入分店名稱">
+                            <div id="frequent-branch-suggestions" class="auto-complete-suggestions"></div>
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="frequent-restaurant-address">地址</label>
-                    <input type="text" id="frequent-restaurant-address" name="frequent-restaurant-address" placeholder="餐廳地址">
-                </div>
-                <div class="form-group">
-                    <label for="frequent-restaurant-notes">備註</label>
-                    <textarea id="frequent-restaurant-notes" name="frequent-restaurant-notes" rows="2" placeholder="如營業時間"></textarea>
-                </div>
-                <div class="menu-items-container">
-                    <div class="menu-items-header">
-                        <div class="menu-items-title">收藏餐點 <span style="color:var(--md-sys-color-error);">*</span></div>
+                    <div class="form-group" style="margin-top: -0.5rem;">
+                        <label class="hide" for="frequent-restaurant-address">地址</label>
+                        <input type="text" id="frequent-restaurant-address" name="frequent-restaurant-address" placeholder="輸入餐廳地址">
                     </div>
-                    <div class="menu-recommendations">
-                        <h4>推薦菜品</h4>
-                        <div id="frequent-restaurant-menu-rec-list" class="recommendations-scroll"></div>
+                    <div class="form-group">
+                        <label for="frequent-restaurant-notes">備註</label>
+                        <textarea id="frequent-restaurant-notes" name="frequent-restaurant-notes" rows="1" placeholder="如營業時間"></textarea>
                     </div>
-                    <div id="frequent-restaurant-menu-items" class="menu-items-list"></div>
-                    <div style="display: flex; justify-content: flex-end;">
-                        <button type="button" class="add-menu-item" id="add-restaurant-menu-btn">
-                            <span class="material-symbols-rounded" style="font-size:18px;">add</span> 新增菜品
-                        </button>
+                    <div class="menu-items-container">
+                        <div class="menu-items-header">
+                            <div class="menu-items-title">收藏餐點 <span style="color:var(--md-sys-color-error);">*</span></div>
+                        </div>
+                        <div class="menu-recommendations">
+                            <h4>推薦菜品</h4>
+                            <div id="frequent-restaurant-menu-rec-list" class="recommendations-scroll"></div>
+                        </div>
+                        <div id="frequent-restaurant-menu-items" class="menu-items-list"></div>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button type="button" class="add-menu-item" id="add-restaurant-menu-btn">
+                                <span class="material-symbols-rounded" style="font-size:18px;">add</span> 新增菜品
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="form-actions">
-                    <!-- <button type="button" class="form-button form-cancel" id="frequent-restaurant-form-cancel"><span class="material-symbols-rounded">cancel</span>取消</button> -->
-                    <button type="submit" class="form-button form-submit"><span class="material-symbols-rounded">save</span>儲存</button>
-                </div>
-            </form>
+                    <div class="form-actions">
+                        <!-- <button type="button" class="form-button form-cancel" id="frequent-restaurant-form-cancel"><span class="material-symbols-rounded">cancel</span>取消</button> -->
+                        <button type="button" class="form-button form-submit"><span class="material-symbols-rounded">save</span>儲存</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
+
+    <canvas id="canvasGenerator" width="711" height="400" class="display-none"></canvas>
 
     <script src="app.js"></script>
 </body>
