@@ -141,7 +141,8 @@ h1 {
     letter-spacing: 0.5px;
 }
 
-.material-symbols-rounded {
+.material-symbols-rounded,
+ul#favStores-list .item-badge::before {
     font-variation-settings:
         'FILL' 1,
         'wght' 400,
@@ -163,7 +164,9 @@ h1 {
 }
 
 input,
+textarea,
 button,
+a.btn,
 .dropdown-trigger {
     font-family: var(--md-ref-typeface-plain);
     font-size: 0.875em;
@@ -189,6 +192,10 @@ button,
     }
 }
 
+textarea {
+    resize: none;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -203,9 +210,14 @@ input[type=number] {
 
 input[readonly] {
     cursor: not-allowed;
+
+    &:not(.dateInput) {
+        border-color: var(--md-sys-color-outline-variant);
+    }
 }
 
-button {
+button,
+a.btn {
     outline: none;
     font-weight: 500;
     line-height: inherit;
@@ -227,6 +239,11 @@ button {
         color: var(--md-sys-color-on-primary-fixed-variant);
     }
 
+    &.btn-secondary-fixed {
+        background-color: var(--md-sys-color-secondary-fixed-dim);
+        color: var(--md-sys-color-on-secondary-fixed-variant);
+    }
+
     &.btn-danger {
         background-color: var(--md-sys-color-error-container);
         color: var(--md-sys-color-on-error-container);
@@ -239,6 +256,7 @@ button {
 }
 
 button:has(.material-symbols-rounded),
+a.btn:has(.material-symbols-rounded),
 .msr-optimise,
 ul[data-type="more-dropdown-menu"] li {
     display: flex;
@@ -246,6 +264,10 @@ ul[data-type="more-dropdown-menu"] li {
     justify-content: center;
     gap: 0.25em;
     align-items: center;
+}
+
+a.btn[href] {
+    text-decoration: none;
 }
 
 ul[data-type="dropdown"],
@@ -432,6 +454,33 @@ main {
         .filter-toggle-arrow {
             transform: rotate(180deg);
         }
+    }
+}
+
+#favStores-sort {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 0.25em;
+    margin-bottom: 1em;
+    font-size: 0.9em;
+
+    &>button {
+        flex: 1;
+
+        .material-symbols-rounded {
+            transition: transform var(--md-sys-motion-duration-medium) ease-in-out;
+
+            &.rotate {
+                transform: rotate(180deg);
+            }
+        }
+    }
+
+    .vr {
+        display: block;
+        width: 0;
+        border-left: 1px dashed var(--md-sys-color-outline);
     }
 }
 
@@ -754,6 +803,108 @@ ul#mealLogs-list {
     }
 }
 
+ul#favStores-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+
+    &>li {
+        border: 2px solid var(--md-sys-color-outline-variant);
+        border-radius: var(--md-sys-shape-corner-large);
+        overflow: hidden;
+        opacity: 0;
+        scale: 1;
+        animation: fadeIn var(--md-sys-motion-duration-medium) cubic-bezier(0.4, 0, 0.2, 1) forwards;
+
+        &:last-child {
+            margin-bottom: 1.5em;
+        }
+
+        .item-header {
+            background-color: var(--md-sys-color-surface-container-low);
+            padding: var(--md-sys-shape-corner-large);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .item-badge {
+                font-size: 0.8em;
+                display: flex;
+                flex-direction: row;
+                gap: 0.25em;
+                align-items: center;
+
+                &::before {
+                    font-family: 'Material Symbols Rounded';
+                    font-weight: normal;
+                    font-style: normal;
+                    font-size: 1em;
+                    line-height: 1;
+                    letter-spacing: normal;
+                    text-transform: none;
+                    display: inline-block;
+                    white-space: nowrap;
+                    word-wrap: normal;
+                    direction: ltr;
+                    font-feature-settings: "liga";
+                    -moz-font-feature-settings: 'liga';
+                    -moz-osx-font-smoothing: grayscale;
+                    content: "loyalty";
+                }
+            }
+        }
+
+        ul {
+            list-style: none;
+            padding: 0.75rem 1rem;
+            padding-right: 0.7rem;
+
+            li {
+                display: grid;
+                grid-template-columns: 1fr auto;
+                color: var(--md-sys-color-on-surface-variant);
+
+                h4 {
+                    margin-bottom: 0.75em;
+                }
+
+                .branch-details {
+                    display: grid;
+                    grid-template-columns: 1.6em 1fr;
+                    font-size: 0.875em;
+                    gap: 0.75em;
+
+                    p {
+                        margin-left: -0.5em;
+                        white-space: pre;
+                        text-wrap: balance;
+                    }
+                }
+
+                .branch-action {
+                    grid-row: 1 / 3;
+                    grid-column: 2 / 3;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.5em;
+                    font-size: 0.8rem;
+
+                    &>* {
+                        aspect-ratio: 1 / 1;
+                    }
+                }
+
+                &+li {
+                    margin-top: 0.9em;
+                    padding-top: 0.9em;
+                    border-top: 1px dashed var(--md-sys-color-outline-variant);
+                }
+            }
+        }
+    }
+}
+
 .fab-container {
     position: fixed;
     bottom: 1.5em;
@@ -1051,7 +1202,7 @@ ul#mealLogs-list {
                     color: var(--md-sys-color-on-surface);
                 }
 
-                #form-close {
+                button {
                     background: none;
                     border: none;
                     color: var(--md-sys-color-on-surface-variant);
@@ -1399,5 +1550,9 @@ ul#mealLogs-list {
     .fab-container {
         right: 1.5em;
         transform: translateX(0);
+    }
+
+    ul#favStores-list ul {
+        font-size: 0.9em;
     }
 }

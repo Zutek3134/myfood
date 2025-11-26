@@ -38,9 +38,11 @@ class DataManagement {
             if (confirm("確定刪除所有紀錄？")) {
                 this.state.mealLogs = [];
                 this.state.filteredMealLogs = [];
-                this.saveToStorageWithCompression(this.storageKeys.MEALLOGS, this.state.mealLogs);
+                this.state.favStores = [];
+                this.state.favStores
                 this.updatePopularItemsFromLogs();
                 this.renderMealLogs();
+                this.renderFavStores();
             }
         });
     }
@@ -477,19 +479,22 @@ class MyFoodApp {
             favStores: {
                 list: document.getElementById("favStores-list"),
                 prompt: document.getElementById("favStores-prompt"),
+                sort: document.getElementById("favStores-sort"),
+                sortBtns: document.getElementById("favStores-sort").querySelectorAll("button"),
                 add_panel: {
                     id: "add-favStores",
-                    open: document.getElementById("open-favStores-panel"),
                     obj: document.querySelector('[data-panel="add-favStores"]'),
                     form: document.querySelector('[data-panel="add-favStores"] form'),
                     restaurant: {
-                        name: document.getElementById("fav-restaurant-name"),
-                        branch: document.getElementById("fav-restaurant-branch")
+                        name: document.getElementById("restaurant-name"),
+                        branch: document.getElementById("restaurant-branch")
                     },
-                    address: document.getElementById("fav-address"),
-                    recommendationList: document.querySelector('[data-panel="add-favStores"] ul[data-type="eaten-recommendations-list"]'),
-                    favList: document.querySelector('[data-panel="add-favStores"] ul[data-type="eaten-list"]'),
-                    addFavListItemBtn: document.querySelector('[data-panel="add-favStores"] .add-eaten-item')
+                    address: document.getElementById("restaurant-log-address"),
+                    url: document.getElementById("restaurant-log-url"),
+                    hours: document.getElementById("restaurant-log-hours"),
+                    notes: document.getElementById("restaurant-log-notes"),
+                    close: document.getElementById("restaurant-log-close"),
+                    save: document.querySelector('[data-panel="add-favStores"] .form-submit')
                 }
             }
         };
@@ -558,10 +563,10 @@ class MyFoodApp {
                 const nameScores = {};
                 const branchScores = {};
                 const favNames = getFavNames();
-                this.state.favStores.forEach(store => {
-                    const name = store.name.trim();
-                    branchScores[name] = (branchScores[name] || 0) + 2;
-                });
+                // this.state.favStores.forEach(store => {
+                //     const name = store.name.trim();
+                //     branchScores[name] = (branchScores[name] || 0) + 2;
+                // });
                 this.state.mealLogs.forEach(log => {
                     const name = log.restaurant.trim();
                     nameScores[name] = (nameScores[name] || 0) + 1;
@@ -575,9 +580,13 @@ class MyFoodApp {
                 })).sort((a, b) => b.score - a.score || window.compareBpmf(a.name, b.name));
             },
             filterKey: "name",
+            // displayTemplate: item => `
+            //     ${item.name}
+            //     ${item.isfavourite ? '<span class="favourite-badge"><span class="material-symbols-rounded">star</span></span>' : ''}
+            //     <span class="count-badge">${item.count} 次</span>
+            // `,
             displayTemplate: item => `
                 ${item.name}
-                ${item.isfavourite ? '<span class="favourite-badge"><span class="material-symbols-rounded">star</span></span>' : ''}
                 <span class="count-badge">${item.count} 次</span>
             `,
             onSelect: (value) => {
@@ -628,7 +637,7 @@ class MyFoodApp {
         this.state.popularItems = this.dataManager.loadFromStorageWithCompression(this.STORAGE_KEYS.POPULAR_ITEMS, {});
         this.sortMealsByDate();
         this.renderMealLogs();
-        this.renderFavStores();
+        this.updateFavStores();
         this.initDatePicker();
         this.createEventDots();
     }
@@ -730,7 +739,7 @@ class MyFoodApp {
     createMealCard(log, index) {
         const li = document.createElement("li");
         li.dataset.id = log.id;
-        li.style.animationDelay = 0.1 * index + "s";
+        li.style.animationDelay = (index < 5 ? 0.1 * index : 0) + "s";
         const menuTags = log.menu.map((item, itemIndex) => `
             <span class="menu-item-tag" style="animation-delay: ${0.1 + 0.05 * itemIndex}s">${item.name}</span>
         `).join("");
@@ -835,8 +844,12 @@ class MyFoodApp {
         const { isRestaurantMenu = false, silent = false } = options;
         const list = isRestaurantMenu ? this.dom.favStores.add_panel.favList : this.dom.mealLogs.add_panel.eatenList;
         if (list) {
-            list.appendChild(this.createEatenListItem(isRestaurantMenu));
-            if (!silent && !isRestaurantMenu) this.calcEatenListSum();
+            const newItem = this.createEatenListItem(isRestaurantMenu);
+            list.appendChild(newItem);
+            if (!silent && !isRestaurantMenu) {
+                this.calcEatenListSum();
+                newItem.querySelector('[placeholder="菜品"]').focus();
+            }
         }
     }
     removeEatenListItem(btn, isFavMenu) {
@@ -924,6 +937,7 @@ class MyFoodApp {
         this.createEventDots();
         this.panelInstance.closePanel(this.dom.mealLogs.add_panel.id);
         this.resetMealLogsPanel();
+        this.updateFavStores();
         window.showToast(isEdit ? "成功更新" : "成功儲存");
     }
     copyOrEditMealLog(isCopy = false) {
@@ -968,26 +982,152 @@ class MyFoodApp {
             });
         });
     }
+    updateFavStores() {
+        const footprintMap = {};
+
+        this.state.mealLogs.forEach(log => {
+            const restaurantName = log.restaurant.trim();
+            const branchName = (log.branch || '總店').trim();
+            const logDate = log.date;
+
+            if (!footprintMap[restaurantName]) {
+                footprintMap[restaurantName] = {
+                    name: restaurantName,
+                    branches: {}
+                };
+            }
+            const restaurant = footprintMap[restaurantName];
+
+            const branchKey = branchName;
+            if (!restaurant.branches[branchKey]) {
+                const savedFootprint = this.state.favStores.find(r => r.name === restaurantName);
+                const savedBranch = savedFootprint?.branches.find(b => b.branch === branchName) || {};
+
+                restaurant.branches[branchKey] = {
+                    branch: branchName,
+                    visitCount: 0,
+                    lastVisit: '',
+                    address: savedBranch.address || '',
+                    url: savedBranch.url || '',
+                    businessHours: savedBranch.businessHours || '',
+                    notes: savedBranch.notes || ''
+                };
+            }
+            const branch = restaurant.branches[branchKey];
+
+            branch.visitCount++;
+            if (!branch.lastVisit || logDate > branch.lastVisit) {
+                branch.lastVisit = logDate;
+            }
+        });
+
+        this.state.favStores = Object.values(footprintMap).map(restaurant => ({
+            ...restaurant,
+            branches: Object.values(restaurant.branches)
+        }));
+
+        this.sortFavStores();
+
+        this.dataManager.saveToStorageWithCompression(
+            this.STORAGE_KEYS.FAVSTORES,
+            this.state.favStores
+        );
+
+        this.renderFavStores();
+    }
+    sortFavStores() {
+        const soryBy = this.dom.favStores.list.dataset.sortby.split(",");
+        const direction = parseInt(soryBy[1].trim());
+        const dimension = soryBy[0].trim();
+        switch (dimension) {
+            case 'frequency':
+                this.state.favStores.sort((a, b) => {
+                    const totalA = a.branches.reduce((s, b) => s + b.visitCount, 0);
+                    const totalB = b.branches.reduce((s, b) => s + b.visitCount, 0);
+                    return (totalB - totalA) * direction;
+                });
+                break;
+            case 'name':
+                this.state.favStores.sort((a, b) => window.compareBpmf(direction === 1 ? a.name : b.name, direction === 1 ? b.name : a.name));
+                break;
+            case 'recent':
+                this.state.favStores.sort((a, b) => {
+                    const latestA = Math.max(...a.branches.map(b => new Date(b.lastVisit).getTime()));
+                    const latestB = Math.max(...b.branches.map(b => new Date(b.lastVisit).getTime()));
+                    return (latestB - latestA) * direction;
+                });
+                break;
+        }
+    }
     renderFavStores() {
         this.dom.favStores.list.innerHTML = "";
-        // if (this.state.favStores.length === 0) {
-        this.dom.favStores.prompt.classList.remove("display-none");
-        // return;
-        // }
-        // this.dom.favStores.prompt.classList.add("display-none");
-        // const fragment = document.createDocumentFragment();
-        // this.state.favStores.sort((a, b) => window.compareBpmf(a.name, b.name)).forEach(store => {
-        //     const li = document.createElement("li");
-        //     li.innerHTML = `
-        //         <h3>${store.name}${store.branch ? "・" + store.branch : ""}</h3>
-        //         ${store.address ? `<p class="address">${store.address}</p>` : ""}
-        //         <div class="menu-preview">
-        //             ${store.menu?.map(item => `<span class="menu-item-tag">${item.name}</span>`).join("") || ""}
-        //         </div>
-        //     `;
-        //     fragment.appendChild(li);
-        // });
-        // this.dom.favStores.list.appendChild(fragment);
+
+        if (this.state.favStores.length === 0) {
+            this.dom.favStores.prompt.classList.remove("display-none");
+            return;
+        }
+
+        this.dom.favStores.prompt.classList.add("display-none");
+        const fragment = document.createDocumentFragment();
+        this.state.favStores.forEach((restaurant, index) => {
+            const restaurantLi = document.createElement('li');
+            restaurantLi.className = 'list-item restaurant-item';
+            restaurantLi.style.animationDelay = (index < 5 ? 0.1 * index : 0) + "s";
+            restaurantLi.innerHTML = `
+<div class="item-header">
+    <h3 class="item-title">${restaurant.name}</h3>
+    <span class="item-badge">${restaurant.branches.reduce((sum, b) => sum + (b.visitCount || 0), 0)}</span>
+</div>
+<ul class="branches-container"></ul>
+    `;
+
+            const branchesContainer = restaurantLi.querySelector('.branches-container');
+
+            restaurant.branches.forEach(branch => {
+                const branchEl = document.createElement('li');
+                branchEl.className = 'branch-item';
+                branchEl.innerHTML = `
+<h4 class="branch-name">${branch.branch}</h4>
+<div class="branch-details">
+    <span class="material-symbols-rounded">
+        ${branch.address ? "location_on" : "add_location"}
+    </span>
+    <p>${branch.address ? branch.address : "添加商家地址"}</p>
+    <span class="material-symbols-rounded">
+        ${branch.businessHours ? "schedule" : "more_time"}
+    </span>
+    <p>${branch.businessHours ? branch.businessHours : "添加營業時間"}</p>
+    <span class="material-symbols-rounded">
+        loyalty
+    </span>
+    <p>${branch.visitCount} 次造訪，上次為${window.formatDatePro(branch.lastVisit)}。</p>
+    ${branch.notes ? `<span class="material-symbols-rounded">notes</span><p>${branch.notes}</p>` : ''}
+</div>
+<div class="branch-action">
+    <button class="btn btn-secondary-fixed">
+        <span class="material-symbols-rounded">edit</span>
+    </button>
+    <a class="btn btn-secondary-fixed" ${branch.url && window.isValidUrl(branch.url) ? `href="${branch.url}"` : `onclick="window.showToast('添加 Google Maps 商家')" tabindex="0"`} target="_blank">
+        <span class="material-symbols-rounded">open_in_new</span>
+    </a>
+</div>
+      `;
+                branchesContainer.appendChild(branchEl);
+                branchEl.querySelector("button").addEventListener("click", () => {
+                    this.dom.favStores.add_panel.restaurant.name.value = restaurant.name;
+                    this.dom.favStores.add_panel.restaurant.branch.value = branch.branch;
+                    this.dom.favStores.add_panel.address.value = branch.address ? branch.address : "";
+                    this.dom.favStores.add_panel.url.value = branch.url ? branch.url : "";
+                    this.dom.favStores.add_panel.hours.value = branch.businessHours ? branch.businessHours : "";
+                    this.dom.favStores.add_panel.notes.value = branch.notes ? branch.notes : "";
+                    this.panelInstance.openPanel(this.dom.favStores.add_panel.id);
+                    window.smartResizeTextarea();
+                });
+            });
+
+            fragment.appendChild(restaurantLi);
+        });
+        this.dom.favStores.list.appendChild(fragment);
     }
     updatePopularItemsFromLogs() {
         const popular = {};
@@ -1020,7 +1160,7 @@ class MyFoodApp {
         const selectedRestaurant = this.dom.filter.dropdown.querySelector("li.selected")?.textContent;
         const filterRestaurant = selectedRestaurant === "所有餐廳" ? "" : selectedRestaurant;
         const startDate = this.dom.filter.date.fp.selectedDates[0];
-        const endDate = this.dom.filter.date.fp.selectedDates[1];
+        const endDate = this.dom.filter.date.fp.selectedDates[1]?.setHours(23, 59);
         this.state.filteredMealLogs = this.state.mealLogs.filter(log => {
             const logDate = new Date(log.date);
             const matchRestaurant = !filterRestaurant || log.restaurant === filterRestaurant;
@@ -1301,8 +1441,43 @@ class MyFoodApp {
             const directUrl = `https://lh3.googleusercontent.com/d/${fileIdMatch[1]}`;
             this.displayImage(directUrl);
         });
-        this.dom.favStores.add_panel.open.addEventListener("click", () => {
-            window.showToast("敬請期待");
+        this.dom.favStores.sortBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                const soryBy = this.dom.favStores.list.dataset.sortby.split(",");
+                const direction = parseInt(soryBy[1].trim());
+                const dimension = soryBy[0].trim();
+
+                const newDimension = btn.dataset.sorttype;
+                const newDirection = (dimension === newDimension) ? -direction : 1;
+
+                this.dom.favStores.sortBtns.forEach((b) => b.classList.remove("btn-primary-fixed"));
+                btn.querySelector(".material-symbols-rounded").classList.toggle("rotate", newDirection === 1);
+                btn.classList.add("btn-primary-fixed");
+
+                this.dom.favStores.list.dataset.sortby = `${newDimension},${newDirection}`;
+                setTimeout(() => {
+                    this.sortFavStores();
+                    this.renderFavStores();
+                }, 100);
+            });
+        });
+        this.dom.favStores.add_panel.close.addEventListener("click", () => {
+            this.panelInstance.closePanel(this.dom.favStores.add_panel.id);
+        });
+        this.dom.favStores.add_panel.save.addEventListener("click", () => {
+            const restaurantName = this.dom.favStores.add_panel.restaurant.name.value;
+            const branchName = this.dom.favStores.add_panel.restaurant.branch.value;
+
+            const restaurant = this.state.favStores.find(r => r.name === restaurantName);
+            const branch = restaurant.branches.find(b => b.branch === branchName);
+            branch.address = this.dom.favStores.add_panel.address.value;
+            branch.url = this.dom.favStores.add_panel.url.value;
+            branch.businessHours = this.dom.favStores.add_panel.hours.value;
+            branch.notes = this.dom.favStores.add_panel.notes.value;
+
+            this.dataManager.saveToStorageWithCompression(this.STORAGE_KEYS.FAVSTORES, this.state.favStores);
+            this.renderFavStores();
+            this.panelInstance.closePanel(this.dom.favStores.add_panel.id);
         });
     }
 }
@@ -1332,7 +1507,25 @@ document.addEventListener("DOMContentLoaded", () => {
         }).split("/");
         formatted[0] -= 1911;
         if (hideWeekday) formatted[2] = formatted[2].split("（")[0];
-        return formatted.join(" / ");
+        return formatted.join(" / ").replace("週", "");
+    };
+    window.formatDatePro = (date) => {
+        const now = new Date();
+        const inputDate = new Date(date);
+
+        if (now.getFullYear() === inputDate.getFullYear()) {
+            if (now.getMonth() === inputDate.getMonth()) {
+                if (now.getDate() === inputDate.getDate()) {
+                    return "今天";
+                } else {
+                    return `本月 ${inputDate.getDate()} 日`;
+                }
+            } else {
+                return `今年 ${inputDate.getMonth() + 1} / ${String(inputDate.getDate()).padStart(2, '0')}`;
+            }
+        } else {
+            return ` ${inputDate.getFullYear() - 1911} / ${inputDate.getMonth() + 1} / ${String(inputDate.getDate()).padStart(2, '0')}`;
+        }
     };
     window.showToast = (message) => {
         const toast = document.createElement("div");
@@ -1348,5 +1541,14 @@ document.addEventListener("DOMContentLoaded", () => {
     window.generateId = () => {
         return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
     };
+    window.isValidUrl = (url) => {
+        try {
+            new URL(url);
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+
     new MyFoodApp();
 });

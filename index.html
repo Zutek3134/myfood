@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>吃吃吃吃吃吃吃 - 餐飲紀錄管理</title>
+    <link rel="icon" type="image/x-icon" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/images/zeeb.png">
     <link rel="preload" href="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/stylesheets/fonts/ZutekSans/ZutekSans-Normal.woff" as="font" type="font/woff" crossorigin="">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +13,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,1,0" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/gh/Zutek3134/zutek3134.github.io@main/js/textarea/script.js"></script>
     <link rel="stylesheet" href="style_master.css">
     <link rel="stylesheet" href="style_flatPickr.css">
     <link id="colour-palette" rel="stylesheet" href="palette_default.css">
@@ -77,8 +79,8 @@
                 </div>
             </div>
             <nav class="tabs">
-                <div class="tab-item active" data-tab="mealList">我的紀錄</div>
-                <div class="tab-item" data-tab="favStores">收藏餐廳</div>
+                <div class="tab-item active" data-tab="mealList">餐食紀錄</div>
+                <div class="tab-item" data-tab="favStores">餐廳足跡</div>
             </nav>
         </div>
     </header>
@@ -100,7 +102,7 @@
                             <ul data-type="dropdown"></ul>
                         </div>
                         <div style="position: relative;">
-                            <input type="text" id="filter-date-range-render" style="width: 100%;" placeholder="所有時間" readonly>
+                            <input type="text" id="filter-date-range-render" class="dateInput" style="width: 100%;" placeholder="所有時間" readonly>
                             <input type="date" id="filter-date-range" style="z-index: -1;position: absolute;bottom: 0;left: 0;opacity: 0;">
                         </div>
                         <div class="filter-actions">
@@ -120,17 +122,23 @@
                 <button class="fab-button fab-main" id="open-mealLogs-panel"><span class="material-symbols-rounded">add</span></button>
             </div>
         </div>
-        <div class="width-container display-none">
+        <div class="widthContainer display-none">
             <div id="favStores-records">
-                <ul id="favStores-list"></ul>
+                <div class="section-header">
+                    <div id="favStores-sort">
+                        <button class="btn btn-primary-fixed" data-sortType="frequency"><span class="material-symbols-rounded rotate">arrow_shape_up</span>頻率</button>
+                        <div class="vr"></div>
+                        <button class="btn" data-sortType="name"><span class="material-symbols-rounded rotate">arrow_shape_up</span>名稱</button>
+                        <div class="vr"></div>
+                        <button class="btn" data-sortType="recent"><span class="material-symbols-rounded rotate">arrow_shape_up</span>時間</button>
+                    </div>
+                </div>
+                <ul id="favStores-list" data-sortBy="frequency,1"></ul>
                 <div id="favStores-prompt" class="prompt display-none">
                     <span class="material-symbols-rounded">restaurant</span>
-                    <h3>尚無收藏餐廳</h3>
-                    <p>添加收藏餐廳後，新增紀錄時會被優先推薦</p>
+                    <h3>尚無餐廳足跡</h3>
+                    <p>還沒有造訪過的餐廳。新增餐食紀錄時，會於此頁自動儲存歷史餐廳。</p>
                 </div>
-            </div>
-            <div class="fab-container">
-                <button class="fab-button fab-main" id="open-favStores-panel"><span class="material-symbols-rounded">add</span></button>
             </div>
         </div>
     </main>
@@ -214,7 +222,7 @@
 
                     <div class="form-group" style="position: relative;">
                         <label for="eaten-date">日期 <span style="color:var(--md-sys-color-error);">*</span></label>
-                        <input type="text" id="eaten-date-render" readonly required>
+                        <input type="text" id="eaten-date-render" class="dateInput" readonly required>
                         <input type="datetime-local" id="eaten-date" style="z-index: -1;position: absolute;bottom: 0;left: 0;">
                         <div class="form-error">請選擇日期</div>
                     </div>
@@ -276,53 +284,37 @@
         <div data-panel="add-favStores" class="slide-up-panel display-none">
             <div class="form-container">
                 <div class="form-header">
-                    <h2 id="frequent-restaurant-form-title">添加收藏餐廳</h2>
-                    <button class="form-close" id="frequent-restaurant-close"><span class="material-symbols-rounded">close</span></button>
+                    <h2 id="restaurant-log-form-title">編輯分店資訊</h2>
+                    <button class="form-close" id="restaurant-log-close"><span class="material-symbols-rounded">close</span></button>
                 </div>
-
-                <form id="frequent-restaurant-form">
+                <form id="restaurant-log-form">
                     <input type="hidden" id="restaurant-id">
                     <div class="form-group">
-                        <label for="frequent-restaurant-name">餐廳 <span style="color:var(--md-sys-color-error);">*</span></label>
-                        <div class="auto-complete-container">
-                            <input type="text" id="frequent-restaurant-name" name="frequent-restaurant-name" placeholder="輸入餐廳名稱" required>
-                            <div class="form-error">請輸入餐廳名稱</div>
-                            <div id="frequent-restaurant-suggestions" class="auto-complete-suggestions"></div>
-                        </div>
+                        <label for="eaten-restaurant-name">餐廳</label>
+                        <input type="text" id="restaurant-name" readonly>
                     </div>
                     <div class="form-group" style="margin-top: -0.5rem;">
-                        <label class="hide" for="frequent-restaurant-branch">分店</label>
-                        <div class="auto-complete-container">
-                            <input type="text" id="frequent-restaurant-branch" class="restaurant-branch" placeholder="輸入分店名稱">
-                            <div id="frequent-branch-suggestions" class="auto-complete-suggestions"></div>
-                        </div>
-                    </div>
-                    <div class="form-group" style="margin-top: -0.5rem;">
-                        <label class="hide" for="frequent-restaurant-address">地址</label>
-                        <input type="text" id="frequent-restaurant-address" name="frequent-restaurant-address" placeholder="輸入餐廳地址">
+                        <input type="text" id="restaurant-branch" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="frequent-restaurant-notes">備註</label>
-                        <textarea id="frequent-restaurant-notes" name="frequent-restaurant-notes" rows="1" placeholder="如營業時間"></textarea>
+                        <label class="hide" for="restaurant-log-address">地址</label>
+                        <input type="text" id="restaurant-log-address" name="restaurant-log-address" placeholder="輸入餐廳地址">
                     </div>
-                    <div class="menu-items-container">
-                        <div class="menu-items-header">
-                            <div class="menu-items-title">收藏餐點 <span style="color:var(--md-sys-color-error);">*</span></div>
-                        </div>
-                        <div class="menu-recommendations">
-                            <h4>推薦菜品</h4>
-                            <div id="frequent-restaurant-menu-rec-list" class="recommendations-scroll"></div>
-                        </div>
-                        <div id="frequent-restaurant-menu-items" class="menu-items-list"></div>
-                        <div style="display: flex; justify-content: flex-end;">
-                            <button type="button" class="add-menu-item" id="add-restaurant-menu-btn">
-                                <span class="material-symbols-rounded" style="font-size:18px;">add</span> 新增菜品
-                            </button>
-                        </div>
+                    <div class="form-group">
+                        <label class="hide" for="restaurant-log-hours">營業時間</label>
+                        <textarea id="restaurant-log-hours" name="restaurant-log-hours" rows="1" placeholder="輸入餐廳營業時間"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="hide" for="restaurant-log-url">商家網址</label>
+                        <input type="text" id="restaurant-log-url" name="restaurant-log-url" placeholder="貼上商家網址">
+                    </div>
+                    <div class="form-group">
+                        <label for="restaurant-log-notes">備註</label>
+                        <textarea id="restaurant-log-notes" name="restaurant-log-notes" rows="1" placeholder="輸入備註"></textarea>
                     </div>
                     <div class="form-actions">
-                        <!-- <button type="button" class="form-button form-cancel" id="frequent-restaurant-form-cancel"><span class="material-symbols-rounded">cancel</span>取消</button> -->
-                        <button type="button" class="form-button form-submit"><span class="material-symbols-rounded">save</span>儲存</button>
+                        <!-- <button type="button" class="form-button form-cancel" id="restaurant-log-form-cancel"><span class="material-symbols-rounded">cancel</span>取消</button> -->
+                        <button type="button" class="btn-primary form-submit" style="width: 100%;"><span class="material-symbols-rounded">save</span>儲存</button>
                     </div>
                 </form>
             </div>
